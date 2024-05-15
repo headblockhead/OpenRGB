@@ -471,6 +471,9 @@ contains(QMAKE_PLATFORM, linux) {
 
     QMAKE_CXXFLAGS += -Wno-implicit-fallthrough
 
+    DEFINES +=                                                                                  \
+        OPENRGB_SYSTEM_PLUGIN_DIRECTORY=\\"\"\"/usr/lib/openrgb/plugins\\"\"\"                  \
+
     #-------------------------------------------------------------------------------------------#
     # Determine which hidapi to use based on availability                                       #
     #   Prefer hidraw backend, then libusb                                                      #
