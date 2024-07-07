@@ -76,6 +76,8 @@ RazerController::RazerController(hid_device* dev_handle, hid_device* dev_argb_ha
     \*-----------------------------------------------------------------*/
     switch(dev_pid)
     {
+        case RAZER_BASILISK_ULTIMATE_WIRED_PID:
+        case RAZER_BASILISK_ULTIMATE_WIRELESS_PID:
         case RAZER_BASILISK_V3_PID:
         case RAZER_BASILISK_V3_X_HYPERSPEED_PID:
         case RAZER_BASILISK_V3_PRO_WIRED_PID:
@@ -90,6 +92,7 @@ RazerController::RazerController(hid_device* dev_handle, hid_device* dev_argb_ha
         case RAZER_CHROMA_HDK_PID:
         case RAZER_CORE_X_PID:
         case RAZER_DEATHADDER_ELITE_PID:
+        case RAZER_DEATHADDER_V2_PID:
         case RAZER_DEATHADDER_V2_MINI_PID:
         case RAZER_DEATHADDER_ESSENTIAL_V2_PID:
         case RAZER_DEATHSTALKER_V2_PRO_TKL_WIRED_PID:
