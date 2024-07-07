@@ -26,4 +26,5 @@ void DetectSlabControllers(hid_device_info *info, const std::string &) {
   }
 }
 
-REGISTER_HID_DETECTOR_I("Slab", DetectSlabControllers, SLAB_VID, SLAB_PID, 0);
+REGISTER_HID_DETECTOR_IPU("Slab", DetectSlabControllers, SLAB_VID, SLAB_PID, 0,
+                          1, 1);
