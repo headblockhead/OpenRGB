@@ -85,22 +85,24 @@ void RGBController_Slab::ResizeZone(int /*zone*/, int /*new_size*/) {
 }
 
 void RGBController_Slab::DeviceUpdateLEDs() {
-  unsigned char frame_buf[270];
+  unsigned char frame_data[63] = {0};
+  for (int i = 0; i < 10; i++) {
+    unsigned char r = RGBGetRValue(colors[i]);
+    unsigned char g = RGBGetGValue(colors[i]);
+    unsigned char b = RGBGetBValue(colors[i]);
+    int count = 1;
+    while (i < 9 && colors[i] == colors[i + 1]) {
+      i++;
+      count++;
+    }
 
-  // Keyboard
-  for (int i = 0; i < 75; i++) {
-    frame_buf[i * 3 + 0] = RGBGetRValue(colors[i + 15]);
-    frame_buf[i * 3 + 1] = RGBGetGValue(colors[i + 15]);
-    frame_buf[i * 3 + 2] = RGBGetBValue(colors[i + 15]);
+    frame_data[i] = r;
+    frame_data[i + 1] = g;
+    frame_data[i + 2] = b;
+    frame_data[i + 3] = count;
   }
-
-  // LED bar
-  for (int i = 0; i < 15; i++) {
-    frame_buf[i * 3 + 225] = RGBGetRValue(colors[i]);
-    frame_buf[i * 3 + 226] = RGBGetGValue(colors[i]);
-    frame_buf[i * 3 + 227] = RGBGetBValue(colors[i]);
-  }
-  controller->SendDirect(270, frame_buf);
+  controller->SendDirect(63, frame_data);
+  controller->SendDirect(0, frame_data);
 }
 
 void RGBController_Slab::UpdateZoneLEDs(int /*zone*/) { DeviceUpdateLEDs(); }
