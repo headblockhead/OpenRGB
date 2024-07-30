@@ -36,12 +36,13 @@ void SlabController::SendDirect(unsigned int frame_count,
     hid_write(dev, buf, 64);
     return;
   }
-
-  unsigned char buf[64] = {0};
-  buf[0] = 0b00000001; // Report ID
-  for (unsigned char j = 0; j < 63;
-       j++) { // Keyboard part 1 (63 bytes) - 21 LEDs
-    buf[j + 1] = frame_data[j];
+  for (unsigned int i = 0; i < frame_count; i++) {
+    unsigned char buf[64] = {0};
+    buf[0] = 0b00000001 + i; // Report ID
+    for (unsigned char j = 0; j < 60;
+         j++) { // Keyboard part 1 (63 bytes) - 21 LEDs
+      buf[j + 1] = frame_data[j];
+    }
+    hid_write(dev, buf, 64);
   }
-  hid_write(dev, buf, 64);
 }

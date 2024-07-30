@@ -49,7 +49,6 @@ void RGBController_Slab::SetupZones() {
   Bar.leds_max = 15;
   Bar.leds_count = 15;
   Bar.matrix_map = NULL;
-  zones.push_back(Bar);
 
   for (int i = 0; i < 15; i++) {
     led new_led;
@@ -68,7 +67,6 @@ void RGBController_Slab::SetupZones() {
   Keyboard.matrix_map->height = 5;
   Keyboard.matrix_map->width = 15;
   Keyboard.matrix_map->map = (unsigned int *)&matrix_map;
-  zones.push_back(Keyboard);
 
   for (int i = 0; i < 75; i++) {
     led new_led;
@@ -77,6 +75,8 @@ void RGBController_Slab::SetupZones() {
     leds.push_back(new_led);
   }
 
+  zones.push_back(Keyboard);
+  zones.push_back(Bar);
   SetupColors();
 }
 
@@ -85,18 +85,19 @@ void RGBController_Slab::ResizeZone(int /*zone*/, int /*new_size*/) {
 }
 
 void RGBController_Slab::DeviceUpdateLEDs() {
-  unsigned char frame_data[63] = {0};
+  unsigned char frame_data[360] = {
+      0}; // 360bytes is the worst possible data transmission.
   int data_index = 0;
   // run length encode the LED data
-  for (int i = 0; i < 10; i++) { // 10 LEDs
+  for (int i = 0; i < 90; i++) { // 90 LEDs
     unsigned char r = RGBGetRValue(colors[i]);
     unsigned char g = RGBGetGValue(colors[i]);
     unsigned char b = RGBGetBValue(colors[i]);
     uint32_t color = r << 16 | g << 8 | b;
     unsigned char count = 1;
-    while (i < 9 && color == (RGBGetRValue(colors[i + 1]) << 16 |
-                              RGBGetGValue(colors[i + 1]) << 8 |
-                              RGBGetBValue(colors[i + 1]))) {
+    while (i < 89 && color == (RGBGetRValue(colors[i + 1]) << 16 |
+                               RGBGetGValue(colors[i + 1]) << 8 |
+                               RGBGetBValue(colors[i + 1]))) {
       count++;
       i++;
     }
@@ -105,7 +106,7 @@ void RGBController_Slab::DeviceUpdateLEDs() {
     frame_data[data_index++] = g;
     frame_data[data_index++] = b;
   }
-  controller->SendDirect(63, frame_data);
+  controller->SendDirect((data_index + 63 - 1) / 63, frame_data);
   controller->SendDirect(0, frame_data);
 }
 
