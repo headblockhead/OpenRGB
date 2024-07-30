@@ -106,7 +106,7 @@ void RGBController_Slab::DeviceUpdateLEDs() {
     frame_data[data_index++] = g;
     frame_data[data_index++] = b;
   }
-  controller->SendDirect((data_index + 63 - 1) / 63, frame_data);
+  controller->SendDirect((data_index + (61 - 1)) / 61, frame_data);
   controller->SendDirect(0, frame_data);
 }
 
