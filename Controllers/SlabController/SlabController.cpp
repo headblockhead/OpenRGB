@@ -31,7 +31,7 @@ void SlabController::SendDirect(unsigned int frame_count,
   // Each frame is 64 bytes, to match the wMaxPacketSize of 64 for the USB HID
   // endpoint.
   if (frame_count == 0) {
-    unsigned char buf[2] = {0}; // Report ID 0x00000000
+    unsigned char buf[2] = {0}; // Report ID 0x00
     hid_write(dev, buf, 2);
     return;
   }
@@ -44,3 +44,23 @@ void SlabController::SendDirect(unsigned int frame_count,
     hid_write(dev, buf, 61);
   }
 }
+
+void SlabController::SendMode(unsigned int mode) {
+  unsigned char buf[2] = {0};
+  buf[0] = 0x00; // Report ID 0x03
+  buf[1] = mode;
+  hid_write(dev, buf, 2);
+  //  std::this_thread::sleep_for(100ms);
+};
+
+void SlabController::SaveLEDState() {
+  unsigned char buf[2] = {0};
+  buf[0] = 0x01; // Report ID 0x01
+  hid_write(dev, buf, 2);
+};
+
+void SlabController::SaveMode() {
+  unsigned char buf[2] = {0};
+  buf[0] = 0x02; // Report ID 0x02
+  hid_write(dev, buf, 2);
+};

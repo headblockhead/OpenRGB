@@ -6,7 +6,7 @@
     @name Slab
     @category Keyboard
     @type USB
-    @save :x:
+    @save :white_check_mark:
     @direct :white_check_mark:
     @effects :x:
     @detectors Slab
@@ -29,12 +29,24 @@ RGBController_Slab::RGBController_Slab(SlabController *controller_ptr) {
   description = "headblockhead's Slab keyboard";
   location = controller->GetDeviceLocation();
   serial = controller->GetSerialString();
+
   mode Direct;
   Direct.name = "Direct";
   Direct.value = 0;
-  Direct.flags = MODE_FLAG_HAS_PER_LED_COLOR;
+  Direct.flags = MODE_FLAG_HAS_PER_LED_COLOR | MODE_FLAG_HAS_BRIGHTNESS |
+                 MODE_FLAG_MANUAL_SAVE;
+  Direct.brightness_min = 0;
+  Direct.brightness = 25;
+  Direct.brightness_max = 100;
   Direct.color_mode = MODE_COLORS_PER_LED;
   modes.push_back(Direct);
+
+  mode Reactive;
+  Reactive.name = "Reactive";
+  Reactive.value = 1;
+  Reactive.flags = MODE_FLAG_MANUAL_SAVE;
+  Reactive.color_mode = MODE_COLORS_NONE;
+  modes.push_back(Reactive);
 
   SetupZones();
 }
@@ -102,9 +114,9 @@ void RGBController_Slab::DeviceUpdateLEDs() {
       i++;
     }
     frame_data[data_index++] = count;
-    frame_data[data_index++] = r;
-    frame_data[data_index++] = g;
-    frame_data[data_index++] = b;
+    frame_data[data_index++] = r * brightness / 100;
+    frame_data[data_index++] = g * brightness / 100;
+    frame_data[data_index++] = b * brightness / 100;
   }
   controller->SendDirect((data_index + (61 - 1)) / 61, frame_data);
   controller->SendDirect(0, frame_data);
@@ -116,4 +128,18 @@ void RGBController_Slab::UpdateSingleLED(int /*led*/) { DeviceUpdateLEDs(); }
 
 void RGBController_Slab::SetCustomMode() {}
 
-void RGBController_Slab::DeviceUpdateMode() {}
+void RGBController_Slab::DeviceUpdateMode() {
+  controller->SendMode(modes[active_mode].value);
+  if (modes[active_mode].value == 0) { // Direct Mode
+    DeviceUpdateLEDs();
+  }
+}
+
+void RGBController_Slab::DeviceSaveMode() {
+  DeviceUpdateMode();
+  if (modes[active_mode].value == 0) { // Direct Mode
+    controller->SaveLEDState();
+    return;
+  }
+  controller->SaveMode();
+}

@@ -18,6 +18,8 @@ public:
 
   void SetCustomMode();
   void DeviceUpdateMode();
+  void DeviceSaveMode(); // If mode is direct, the LED state will be saved to
+                         // the device.
 
 private:
   SlabController *controller;

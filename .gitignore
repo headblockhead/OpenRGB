@@ -1,6 +1,12 @@
 # This file is used to ignore files that should not be pushed to the repo.
 # ----------------------------------------------------------------------------
 
+# Nix build files
+result
+
+# CCLS
+.ccls-cache/
+
 # OpenRGB Specific
 OpenRGB
 openrgb
