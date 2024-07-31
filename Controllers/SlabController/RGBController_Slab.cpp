@@ -114,9 +114,9 @@ void RGBController_Slab::DeviceUpdateLEDs() {
       i++;
     }
     frame_data[data_index++] = count;
-    frame_data[data_index++] = r * brightness / 100;
-    frame_data[data_index++] = g * brightness / 100;
-    frame_data[data_index++] = b * brightness / 100;
+    frame_data[data_index++] = r * modes[active_mode].brightness / 100;
+    frame_data[data_index++] = g * modes[active_mode].brightness / 100;
+    frame_data[data_index++] = b * modes[active_mode].brightness / 100;
   }
   controller->SendDirect((data_index + (61 - 1)) / 61, frame_data);
   controller->SendDirect(0, frame_data);
