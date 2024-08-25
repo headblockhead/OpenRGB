@@ -10,11 +10,13 @@
 |   SPDX-License-Identifier: GPL-2.0-only                   |
 \*---------------------------------------------------------*/
 
+#include "Detector.h"
 #include "i2c_smbus_piix4.h"
-#include "OlsApi.h"
 #include "LogManager.h"
+#include "OlsApi.h"
 #include "ResourceManager.h"
 #include "SettingsManager.h"
+#include "wmi.h"
 
 i2c_smbus_piix4::i2c_smbus_piix4()
 {
@@ -253,13 +255,10 @@ s32 i2c_smbus_piix4::i2c_smbus_xfer(u8 addr, char read_write, u8 command, int si
     return result;
 }
 
-s32 i2c_smbus_piix4::i2c_xfer(u8 addr, char read_write, int* size, u8* data)
+s32 i2c_smbus_piix4::i2c_xfer(u8 /*addr*/, char /*read_write*/, int* /*size*/, u8* /*data*/)
 {
     return -1;
 }
-
-#include "Detector.h"
-#include "wmi.h"
 
 bool i2c_smbus_piix4_detect()
 {
@@ -276,7 +275,7 @@ bool i2c_smbus_piix4_detect()
     // Query WMI for Win32_PnPSignedDriver entries with names matching "SMBUS" or "SM BUS"
     // These devices may be browsed under Device Manager -> System Devices
     std::vector<QueryObj> q_res_PnPSignedDriver;
-    hres = wmi.query("SELECT * FROM Win32_PnPSignedDriver WHERE Description LIKE '\%SMBUS\%' OR Description LIKE '\%SM BUS\%'", q_res_PnPSignedDriver);
+    hres = wmi.query("SELECT * FROM Win32_PnPSignedDriver WHERE Description LIKE '%SMBUS%' OR Description LIKE '%SM BUS%'", q_res_PnPSignedDriver);
 
     if (hres)
     {

@@ -10,26 +10,24 @@
 \*---------------------------------------------------------*/
 
 #include <cstring>
+#include "StringUtils.h"
 #include "ThermaltakeRiingQuadController.h"
 
 ThermaltakeRiingQuadController::ThermaltakeRiingQuadController(hid_device* dev_handle, const char* path)
 {
-    wchar_t tmpName[HID_MAX_STR];
-
     dev         = dev_handle;
     location    = path;
 
-    hid_get_manufacturer_string(dev, tmpName, HID_MAX_STR);
-    std::wstring wName = std::wstring(tmpName);
-    device_name = std::string(wName.begin(), wName.end());
+    /*---------------------------------------------------------*\
+    | Get device name from HID manufacturer and product strings |
+    \*---------------------------------------------------------*/
+    wchar_t name_string[HID_MAX_STR];
 
-    hid_get_product_string(dev, tmpName, HID_MAX_STR);
-    wName = std::wstring(tmpName);
-    device_name.append(" ").append(std::string(wName.begin(), wName.end()));
+    hid_get_manufacturer_string(dev, name_string, HID_MAX_STR);
+    device_name = StringUtils::wstring_to_string(name_string);
 
-    hid_get_serial_number_string(dev, tmpName, HID_MAX_STR);
-    wName = std::wstring(tmpName);
-    serial = std::string(wName.begin(), wName.end());
+    hid_get_product_string(dev, name_string, HID_MAX_STR);
+    device_name.append(" ").append(StringUtils::wstring_to_string(name_string));
 
     SendInit();
 
@@ -87,7 +85,15 @@ std::string ThermaltakeRiingQuadController::GetDeviceLocation()
 
 std::string ThermaltakeRiingQuadController::GetSerial()
 {
-    return(serial);
+    wchar_t serial_string[128];
+    int ret = hid_get_serial_number_string(dev, serial_string, 128);
+
+    if(ret != 0)
+    {
+        return("");
+    }
+
+    return(StringUtils::wstring_to_string(serial_string));
 }
 
 void ThermaltakeRiingQuadController::SetChannelLEDs(unsigned char channel, RGBColor * colors, unsigned int num_colors)

@@ -13,7 +13,7 @@
 
 #include <string>
 #include <vector>
-#include <hidapi/hidapi.h>
+#include <hidapi.h>
 #include "RGBController.h"
 #include "LogManager.h"
 
@@ -105,7 +105,6 @@ protected:
         );
 private:
     char                        device_name[16];
-    unsigned int                led_count;
 
     void GetConfigTable();
 

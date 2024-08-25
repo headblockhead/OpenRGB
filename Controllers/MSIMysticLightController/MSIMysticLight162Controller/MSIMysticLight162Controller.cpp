@@ -14,6 +14,7 @@
 #include <array>
 #include <bitset>
 #include "MSIMysticLight162Controller.h"
+#include "StringUtils.h"
 
 #define BITSET(val, bit, pos)       ((unsigned char)std::bitset<8>(val).set((pos), (bit)).to_ulong())
 
@@ -93,7 +94,6 @@ MSIMysticLight162Controller::MSIMysticLight162Controller
         location = path;
 
         ReadName();
-        ReadSerial();
         ReadFwVersion();
         ReadSettings();
     }
@@ -204,7 +204,15 @@ std::string MSIMysticLight162Controller::GetDeviceLocation()
 
 std::string MSIMysticLight162Controller::GetSerial()
 {
-    return chip_id;
+    wchar_t serial_string[128];
+    int ret = hid_get_serial_number_string(dev, serial_string, 128);
+
+    if(ret != 0)
+    {
+        return("");
+    }
+
+    return(StringUtils::wstring_to_string(serial_string));
 }
 
 bool MSIMysticLight162Controller::ReadSettings()
@@ -400,22 +408,6 @@ bool MSIMysticLight162Controller::ReadFwVersion()
     return(ret_val > 0);
 }
 
-void MSIMysticLight162Controller::ReadSerial()
-{
-    wchar_t serial[256];
-
-    /*-----------------------------------------------------*\
-    | Get the serial number string from HID                 |
-    \*-----------------------------------------------------*/
-    hid_get_serial_number_string(dev, serial, 256);
-
-    /*-----------------------------------------------------*\
-    | Convert wchar_t into std::wstring into std::string    |
-    \*-----------------------------------------------------*/
-    std::wstring wserial = std::wstring(serial);
-    chip_id = std::string(wserial.begin(), wserial.end());
-}
-
 void MSIMysticLight162Controller::ReadName()
 {
     wchar_t tname[256];
@@ -426,10 +418,9 @@ void MSIMysticLight162Controller::ReadName()
     hid_get_manufacturer_string(dev, tname, 256);
 
     /*-----------------------------------------------------*\
-    | Convert wchar_t into std::wstring into std::string    |
+    | Convert to std::string                                |
     \*-----------------------------------------------------*/
-    std::wstring wname = std::wstring(tname);
-    name = std::string(wname.begin(), wname.end());
+    name = StringUtils::wstring_to_string(tname);
 
     /*-----------------------------------------------------*\
     | Get the product string from HID                       |
@@ -439,8 +430,7 @@ void MSIMysticLight162Controller::ReadName()
     /*-----------------------------------------------------*\
     | Append the product string to the manufacturer string  |
     \*-----------------------------------------------------*/
-    wname = std::wstring(tname);
-    name.append(" ").append(std::string(wname.begin(), wname.end()));
+    name.append(" ").append(StringUtils::wstring_to_string(tname));
 }
 
 MSI_MODE MSIMysticLight162Controller::GetMode()

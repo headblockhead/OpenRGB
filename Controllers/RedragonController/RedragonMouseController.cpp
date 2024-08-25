@@ -11,6 +11,7 @@
 
 #include <cstring>
 #include "RedragonMouseController.h"
+#include "StringUtils.h"
 
 RedragonMouseController::RedragonMouseController(hid_device* dev_handle, const char* path)
 {
@@ -43,10 +44,7 @@ std::string RedragonMouseController::GetSerialString()
         return("");
     }
 
-    std::wstring return_wstring = serial_string;
-    std::string return_string(return_wstring.begin(), return_wstring.end());
-
-    return(return_string);
+    return(StringUtils::wstring_to_string(serial_string));
 }
 
 void RedragonMouseController::SendMouseColor
@@ -107,7 +105,7 @@ void RedragonMouseController::SendMouseMode
 
 void RedragonMouseController::SendMouseApply()
 {
-    char usb_buf[REDRAGON_MOUSE_REPORT_SIZE];
+    unsigned char usb_buf[REDRAGON_MOUSE_REPORT_SIZE];
 
     /*-----------------------------------------------------*\
     | Zero out buffer                                       |
@@ -125,7 +123,7 @@ void RedragonMouseController::SendMouseApply()
     /*-----------------------------------------------------*\
     | Send packet                                           |
     \*-----------------------------------------------------*/
-    hid_send_feature_report(dev, (unsigned char *)usb_buf, REDRAGON_MOUSE_REPORT_SIZE);
+    hid_send_feature_report(dev, usb_buf, REDRAGON_MOUSE_REPORT_SIZE);
 }
 
 void RedragonMouseController::SendWritePacket
@@ -135,7 +133,7 @@ void RedragonMouseController::SendWritePacket
     unsigned char *     data
     )
 {
-    char usb_buf[REDRAGON_MOUSE_REPORT_SIZE];
+    unsigned char usb_buf[REDRAGON_MOUSE_REPORT_SIZE];
 
     /*-----------------------------------------------------*\
     | Zero out buffer                                       |
@@ -159,5 +157,5 @@ void RedragonMouseController::SendWritePacket
     /*-----------------------------------------------------*\
     | Send packet                                           |
     \*-----------------------------------------------------*/
-    hid_send_feature_report(dev, (unsigned char *)usb_buf, REDRAGON_MOUSE_REPORT_SIZE);
+    hid_send_feature_report(dev, usb_buf, REDRAGON_MOUSE_REPORT_SIZE);
 }

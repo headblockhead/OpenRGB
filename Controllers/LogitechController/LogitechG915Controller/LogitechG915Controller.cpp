@@ -11,6 +11,7 @@
 
 #include <cstring>
 #include "LogitechG915Controller.h"
+#include "StringUtils.h"
 
 LogitechG915Controller::LogitechG915Controller(hid_device* dev_handle, bool wired)
 {
@@ -49,10 +50,7 @@ std::string LogitechG915Controller::GetSerialString()
         return("");
     }
 
-    std::wstring return_wstring = serial_string;
-    std::string return_string(return_wstring.begin(), return_wstring.end());
-
-    return(return_string);
+    return(StringUtils::wstring_to_string(serial_string));
 }
 
 void LogitechG915Controller::Commit()
@@ -117,7 +115,7 @@ void LogitechG915Controller::SetMode
 
 void LogitechG915Controller::SendCommit()
 {
-    char usb_buf[20];
+    unsigned char usb_buf[20];
 
     /*-----------------------------------------------------*\
     | Zero out buffer                                       |
@@ -135,13 +133,13 @@ void LogitechG915Controller::SendCommit()
     /*-----------------------------------------------------*\
     | Send packet                                           |
     \*-----------------------------------------------------*/
-    hid_write(dev_handle, (unsigned char *)usb_buf, 20);
-    hid_read_timeout(dev_handle,  (unsigned char *)usb_buf, 20, LOGITECH_READ_TIMEOUT);
+    hid_write(dev_handle, usb_buf, 20);
+    hid_read_timeout(dev_handle, usb_buf, 20, LOGITECH_READ_TIMEOUT);
 }
 
 void LogitechG915Controller::BeginModeSet()
 {
-    char usb_buf[20];
+    unsigned char usb_buf[20];
 
     /*-----------------------------------------------------*\
     | Zero out buffer                                       |
@@ -159,8 +157,8 @@ void LogitechG915Controller::BeginModeSet()
     /*-----------------------------------------------------*\
     | Send packet                                           |
     \*-----------------------------------------------------*/
-    hid_write(dev_handle, (unsigned char *)usb_buf, 20);
-    hid_read(dev_handle,  (unsigned char *)usb_buf, 20);
+    hid_write(dev_handle, usb_buf, 20);
+    hid_read(dev_handle,  usb_buf, 20);
 
     /*-----------------------------------------------------*\
     | Zero out buffer                                       |
@@ -178,13 +176,13 @@ void LogitechG915Controller::BeginModeSet()
     /*-----------------------------------------------------*\
     | Send packet                                           |
     \*-----------------------------------------------------*/
-    hid_write(dev_handle, (unsigned char *)usb_buf, 20);
-    hid_read(dev_handle,  (unsigned char *)usb_buf, 20);
+    hid_write(dev_handle, usb_buf, 20);
+    hid_read(dev_handle,  usb_buf, 20);
 }
 
 void LogitechG915Controller::InitializeModeSet()
 {
-    char usb_buf[20];
+    unsigned char usb_buf[20];
 
     /*-----------------------------------------------------*\
     | Zero out buffer                                       |
@@ -205,13 +203,13 @@ void LogitechG915Controller::InitializeModeSet()
     /*-----------------------------------------------------*\
     | Send packet                                           |
     \*-----------------------------------------------------*/
-    hid_write(dev_handle, (unsigned char *)usb_buf, 20);
-    hid_read(dev_handle,  (unsigned char *)usb_buf, 20);
+    hid_write(dev_handle, usb_buf, 20);
+    hid_read(dev_handle,  usb_buf, 20);
 }
 
 void LogitechG915Controller::InitializeDirect()
 {
-    char usb_buf[20];
+    unsigned char usb_buf[20];
 
     /*-----------------------------------------------------*\
     | Zero out buffer                                       |
@@ -229,8 +227,8 @@ void LogitechG915Controller::InitializeDirect()
     /*-----------------------------------------------------*\
     | Send packet                                           |
     \*-----------------------------------------------------*/
-    hid_write(dev_handle, (unsigned char *)usb_buf, 20);
-    hid_read(dev_handle,  (unsigned char *)usb_buf, 20);
+    hid_write(dev_handle, usb_buf, 20);
+    hid_read(dev_handle,  usb_buf, 20);
 
     /*-----------------------------------------------------*\
     | Zero out buffer                                       |
@@ -248,8 +246,8 @@ void LogitechG915Controller::InitializeDirect()
     /*-----------------------------------------------------*\
     | Send packet                                           |
     \*-----------------------------------------------------*/
-    hid_write(dev_handle, (unsigned char *)usb_buf, 20);
-    hid_read(dev_handle,  (unsigned char *)usb_buf, 20);
+    hid_write(dev_handle, usb_buf, 20);
+    hid_read(dev_handle,  usb_buf, 20);
 
     /*-----------------------------------------------------*\
     | Zero out buffer                                       |
@@ -268,8 +266,8 @@ void LogitechG915Controller::InitializeDirect()
     /*-----------------------------------------------------*\
     | Send packet                                           |
     \*-----------------------------------------------------*/
-    hid_write(dev_handle, (unsigned char *)usb_buf, 20);
-    hid_read(dev_handle,  (unsigned char *)usb_buf, 20);
+    hid_write(dev_handle, usb_buf, 20);
+    hid_read(dev_handle,  usb_buf, 20);
 
     /*-----------------------------------------------------*\
     | Zero out buffer                                       |
@@ -289,8 +287,8 @@ void LogitechG915Controller::InitializeDirect()
     /*-----------------------------------------------------*\
     | Send packet                                           |
     \*-----------------------------------------------------*/
-    hid_write(dev_handle, (unsigned char *)usb_buf, 20);
-    hid_read(dev_handle,  (unsigned char *)usb_buf, 20);
+    hid_write(dev_handle, usb_buf, 20);
+    hid_read(dev_handle,  usb_buf, 20);
 }
 
 void LogitechG915Controller::SendSingleLed
@@ -301,7 +299,7 @@ void LogitechG915Controller::SendSingleLed
     unsigned char       b
     )
 {
-    char usb_buf[20];
+    unsigned char usb_buf[20];
 
     /*-----------------------------------------------------*\
     | Zero out buffer                                       |
@@ -325,8 +323,8 @@ void LogitechG915Controller::SendSingleLed
     /*-----------------------------------------------------*\
     | Send packet                                           |
     \*-----------------------------------------------------*/
-    hid_write(dev_handle, (unsigned char *)usb_buf, 20);
-    hid_read(dev_handle, (unsigned char *)usb_buf, 20);
+    hid_write(dev_handle, usb_buf, 20);
+    hid_read(dev_handle, usb_buf, 20);
 }
 
 void LogitechG915Controller::SendDirectFrame
@@ -335,7 +333,7 @@ void LogitechG915Controller::SendDirectFrame
     unsigned char *     frame_data
     )
 {
-    char usb_buf[20];
+    unsigned char usb_buf[20];
 
     /*-----------------------------------------------------*\
     | Zero out buffer                                       |
@@ -358,8 +356,8 @@ void LogitechG915Controller::SendDirectFrame
     /*-----------------------------------------------------*\
     | Send packet                                           |
     \*-----------------------------------------------------*/
-    hid_write(dev_handle, (unsigned char *)usb_buf, 20);
-    hid_read_timeout(dev_handle,  (unsigned char *)usb_buf, 20, LOGITECH_READ_TIMEOUT);
+    hid_write(dev_handle, usb_buf, 20);
+    hid_read_timeout(dev_handle, usb_buf, 20, LOGITECH_READ_TIMEOUT);
 }
 
 void LogitechG915Controller::SendMode
@@ -373,7 +371,7 @@ void LogitechG915Controller::SendMode
     unsigned char       blue
     )
 {
-    char usb_buf[20];
+    unsigned char usb_buf[20];
 
     /*-----------------------------------------------------*\
     | Zero out buffer                                       |
@@ -436,6 +434,6 @@ void LogitechG915Controller::SendMode
     /*-----------------------------------------------------*\
     | Send packet                                           |
     \*-----------------------------------------------------*/
-    hid_write(dev_handle, (unsigned char *)usb_buf, 20);
-    hid_read(dev_handle, (unsigned char *)usb_buf, 20);
+    hid_write(dev_handle, usb_buf, 20);
+    hid_read(dev_handle, usb_buf, 20);
 }

@@ -14,6 +14,7 @@
 
 #include <string.h>
 #include "LianLiUniHubSLInfinityController.h"
+#include "StringUtils.h"
 
 using namespace std::chrono_literals;
 
@@ -44,8 +45,7 @@ std::string LianLiUniHubSLInfinityController::GetFirmwareVersionString()
         return ("");
     }
 
-    std::wstring return_wstring = product_string;
-    std::string return_string(return_wstring.begin(),return_wstring.end());
+    std::string return_string = StringUtils::wstring_to_string(product_string);
 
     return(return_string.substr(return_string.find_last_of("-")+1,4).c_str());
 }
@@ -57,19 +57,15 @@ std::string LianLiUniHubSLInfinityController::GetName()
 
 std::string LianLiUniHubSLInfinityController::GetSerialString()
 {
-    wchar_t serial_string[20];
-    int ret = hid_get_serial_number_string(dev, serial_string, 20);
+    wchar_t serial_string[128];
+    int ret = hid_get_serial_number_string(dev, serial_string, 128);
 
-    if (ret != 0)
+    if(ret != 0)
     {
-        return ("");
+        return("");
     }
 
-    std::wstring return_wstring = serial_string;
-    std::string return_string(return_wstring.begin(), return_wstring.end());
-
-    return(return_string);
-
+    return(StringUtils::wstring_to_string(serial_string));
 }
 
 float infinityBrightnessLimit(RGBColor color)
@@ -173,12 +169,12 @@ void LianLiUniHubSLInfinityController::SetChannelMode(unsigned char channel, con
     memset(fan_led_data, 0x00, sizeof(fan_led_data));
 
     std::vector<RGBColor> colors = active_mode.colors;
-    unsigned int num_colors = colors.size();
+    unsigned int num_colors = (unsigned int)colors.size();
 
     if(!colors.empty())                                          // Update led_data if there's colors
     {
         brightness = static_cast<float>(active_mode.brightness)/4;
-        if (num_colors == 6)
+        if(num_colors == 6)
         {
             for(unsigned int i = 0; i < 6; i++)
             {

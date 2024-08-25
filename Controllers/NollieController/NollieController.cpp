@@ -11,7 +11,7 @@
 
 #include <cstring>
 #include "NollieController.h"
-#include "RGBController_Nollie.h"
+#include "StringUtils.h"
 
 using namespace std::chrono_literals;
 
@@ -37,14 +37,26 @@ std::string NollieController::GetSerialString()
         return("");
     }
 
-    std::wstring return_wstring = serial_string;
-    std::string return_string(return_wstring.begin(), return_wstring.end());
-    return(return_string);
+    return(StringUtils::wstring_to_string(serial_string));
 }
 
 unsigned short NollieController::GetUSBPID()
 {
     return(usb_pid);
+}
+
+void NollieController::InitChLEDs(int *led_num_list,int ch_num)
+{
+    unsigned char   usb_buf[65];
+    memset(usb_buf, 0x00, sizeof(usb_buf));
+    usb_buf[1] = 0xFE;
+    usb_buf[2] = 0x03;
+    for(int i = 0; i < ch_num; i++)
+    {
+        usb_buf[3+(i*2)] = led_num_list[i]& 0xFF;
+        usb_buf[4+(i*2)] = (led_num_list[i] >> 8) & 0xFF;
+    }
+    hid_write(dev, usb_buf, 65);
 }
 
 void NollieController::SetMos(bool mos)

@@ -242,7 +242,8 @@
 #define ASUS_ROG_STRIX_RTX_3070_O8G_V2_GAMING           0x882C
 #define ASUS_ROG_STRIX_RTX_3070_O8G_V2_WHITE            0x8832
 #define ASUS_KO_RTX_3070_O8G_GAMING                     0x8842
-#define ASUS_KO_RTX_3070_08G_GAMING_V1                  0x87BE
+#define ASUS_KO_RTX_3070_O8G_GAMING_V1                  0x87BE
+#define ASUS_KO_RTX_3070_O8G_GAMING_V2                  0x8843
 #define ASUS_TUF_RTX_3070_8G_GAMING                     0x87C2
 #define ASUS_TUF_RTX_3070_O8G_GAMING                    0x87C1
 #define ASUS_TUF_RTX_3070_O8G_V2_GAMING                 0x8825
@@ -283,8 +284,6 @@
 #define ASUS_TUF_RTX_3090TI_24G_GAMING                  0x8875
 #define ASUS_TUF_RTX_3090TI_O24G_OC_GAMING              0x8874
 #define ASUS_ROG_STRIX_LC_RTX_3090TI_O24G_GAMING        0x8870
-#define ASUS_ROG_STRIX_RTX_4070TI_O12G_GAMING           0x88E5
-#define ASUS_ROG_STRIX_RTX_4070TI_O12G_GAMING_2         0x88A7
 #define ASUS_TUF_RX_6700XT_O12G_GAMING                  0x05C9
 #define ASUS_ROG_STRIX_RX_6700XT_O12G_GAMING            0x05C7
 #define ASUS_ROG_STRIX_RX_6750XT_O12G_GAMING            0x05E5
@@ -316,6 +315,9 @@
 #define ASUS_TUF_RTX_4070TI_SUPER_16G_GAMING            0x8958
 #define ASUS_TUF_RTX_4070TI_SUPER_O16G_GAMING           0x8957
 #define ASUS_TUF_RTX_4070TI_SUPER_O16G_GAMING_WHITE     0x895B
+#define ASUS_ROG_STRIX_RTX_4070TI_12G_GAMING            0x88A6
+#define ASUS_ROG_STRIX_RTX_4070TI_O12G_GAMING           0x88E5
+#define ASUS_ROG_STRIX_RTX_4070TI_O12G_GAMING_2         0x88A7
 #define ASUS_ROG_STRIX_RTX_4070TI_SUPER_16G_GAMING      0x896B
 #define ASUS_ROG_STRIX_RTX_4070TI_SUPER_O16G_GAMING     0x896D
 #define ASUS_TUF_RTX_4080_16G_GAMING                    0x88A2
@@ -481,6 +483,7 @@
 #define GAINWARD_GTX_1080_TI_PHOENIX                    0x1B06
 #define GAINWARD_RTX3050_SUB_DEV                        0x2507
 #define GAINWARD_RTX_3070_PHANTOM                       0xF279
+#define GAINWARD_RTX_4070_GHOST_SUB_DEV                 0xF303
 
 /*-----------------------------------------------------*\
 | GALAX / KFA2 Sub-Device IDs                           |
@@ -511,6 +514,7 @@
 #define GIGABYTE_GTX1650_GAMING_OC_SUB_DEV              0x3FE4
 #define GIGABYTE_GTX1660_GAMING_OC_6G_SUB_DEV           0x3FC7
 #define GIGABYTE_GTX1660S_GAMING_OC_SUB_DEV             0x4014
+#define GIGABYTE_GTX1660TI_GAMING_OC_SUB_DEV            0x3FC5
 #define GIGABYTE_RTX2060_GAMING_OC_SUB_DEV              0x37CE
 #define GIGABYTE_RTX2060_GAMING_OC_PRO_SUB_DEV          0x3FC2
 #define GIGABYTE_RTX2060_GAMING_OC_PRO_SUB_DEV2         0x3FC9

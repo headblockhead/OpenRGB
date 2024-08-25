@@ -12,12 +12,13 @@
 #pragma once
 
 #include <string>
-#include <hidapi/hidapi.h>
+#include <hidapi.h>
 
 #define EPOMAKER_PACKET_LENGTH                      0x40
 #define EPOMAKER_COMMAND_RGB                        0x07
 #define EPOMAKER_COMMAND_SET                        0xF60A
 #define EPOMAKER_COMMAND_PING                       0xF7
+#define HID_MAX_STR                                 255
 
 enum
 {
@@ -107,7 +108,6 @@ public:
 
 private:
     std::string             device_name;
-    std::string             serial;
     std::string             location;
     hid_device*             dev;
 

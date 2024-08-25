@@ -12,7 +12,7 @@
 #pragma once
 
 #include <string>
-#include <hidapi/hidapi.h>
+#include <hidapi.h>
 #include "RGBController.h"
 
 #define LEGO_DIMENSIONS_TOYPAD_BASE_REPORT_ID       0x55
@@ -50,7 +50,6 @@ protected:
 
 private:
     std::string location;
-    std::string serial_number;
     std::string version;
 
     void Activate();

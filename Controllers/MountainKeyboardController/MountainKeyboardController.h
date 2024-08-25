@@ -12,7 +12,7 @@
 #pragma once
 
 #include <string>
-#include <hidapi/hidapi.h>
+#include <hidapi.h>
 
 /*-----------------------------------------------------*\
 | Mountain vendor ID                                    |
@@ -151,5 +151,4 @@ private:
 
     hid_device*             dev;
     std::string             location;
-    unsigned short          usb_pid;
 };

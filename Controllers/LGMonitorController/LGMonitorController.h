@@ -12,7 +12,7 @@
 #pragma once
 
 #include <string>
-#include <hidapi/hidapi.h>
+#include <hidapi.h>
 #include "RGBController.h"
 
 #define LG_MONITOR_LEDS                 48
@@ -59,7 +59,6 @@ private:
     std::string description;
     std::string location;
     std::string version;
-    std::string serial_number;
     bool        on = false;
     bool        direct_mode_enabled = false;
 

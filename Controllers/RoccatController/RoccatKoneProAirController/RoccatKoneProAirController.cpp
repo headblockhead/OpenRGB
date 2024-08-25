@@ -11,25 +11,13 @@
 
 #include <cstring>
 #include "RoccatKoneProAirController.h"
+#include "StringUtils.h"
 
 RoccatKoneProAirController::RoccatKoneProAirController(hid_device* dev_handle, const hid_device_info& info)
 {
     dev                 = dev_handle;
     version             = "";
     location            = info.path;
-
-    wchar_t serial_string[128];
-    int ret = hid_get_serial_number_string(dev, serial_string, 128);
-
-    if(ret != 0)
-    {
-        serial_number = "";
-    }
-    else
-    {
-        std::wstring return_wstring = serial_string;
-        serial_number = std::string(return_wstring.begin(), return_wstring.end());
-    }
 }
 
 RoccatKoneProAirController::~RoccatKoneProAirController()
@@ -44,7 +32,15 @@ std::string RoccatKoneProAirController::GetFirmwareVersion()
 
 std::string RoccatKoneProAirController::GetSerialString()
 {
-    return serial_number;
+    wchar_t serial_string[128];
+    int ret = hid_get_serial_number_string(dev, serial_string, 128);
+
+    if(ret != 0)
+    {
+        return("");
+    }
+
+    return(StringUtils::wstring_to_string(serial_string));
 }
 
 std::string RoccatKoneProAirController::GetDeviceLocation()
@@ -92,8 +88,8 @@ void RoccatKoneProAirController::SetMode(std::vector<RGBColor> colors, unsigned 
     SendRGB(false,
             colors,
             mode_value,
-            mode_flags & MODE_FLAG_HAS_SPEED ? speed : ROCCAT_KONE_PRO_AIR_SPEED_MAX,
-            mode_flags & MODE_FLAG_HAS_BRIGHTNESS ? brightness : ROCCAT_KONE_PRO_AIR_BRIGHTNESS_MAX
+            (mode_flags & MODE_FLAG_HAS_SPEED     ) ? speed      : (unsigned char)ROCCAT_KONE_PRO_AIR_SPEED_MAX,
+            (mode_flags & MODE_FLAG_HAS_BRIGHTNESS) ? brightness : (unsigned char)ROCCAT_KONE_PRO_AIR_BRIGHTNESS_MAX
            );
 }
 

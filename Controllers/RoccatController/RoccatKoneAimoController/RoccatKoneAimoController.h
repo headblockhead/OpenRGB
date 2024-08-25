@@ -15,9 +15,10 @@
 #include <map>
 #include <string>
 #include <vector>
-#include <hidapi/hidapi.h>
+#include <hidapi.h>
 #include "RGBController.h"
 
+#define HID_MAX_STR         255
 #define NUM_LEDS            11
 
 #define R_OFFSET            0
@@ -50,7 +51,6 @@ public:
 
 private:
     std::string     device_name;
-    std::string     serial;
     std::string     location;
     hid_device*     dev;
     unsigned char   usb_colors_buf[USB_COLOR_BUFF_LEN]; // USB buffer to be sent everytime we update mouse's LEDs

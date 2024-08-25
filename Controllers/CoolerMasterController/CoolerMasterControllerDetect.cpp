@@ -10,7 +10,7 @@
 /*-----------------------------------------------------*\
 | OpenRGB includes                                      |
 \*-----------------------------------------------------*/
-#include <hidapi/hidapi.h>
+#include <hidapi.h>
 #include "Detector.h"
 #include "LogManager.h"
 #include "RGBController.h"
@@ -150,7 +150,6 @@ void DetectCoolerMasterV1Keyboards(hid_device_info* info, const std::string& nam
             break;
 
             default:
-
                 LOG_DEBUG("[%s] Controller not created as the product ID %04X is missing from detector switch", name.c_str(), info->product_id);
             break;
         }
@@ -194,6 +193,7 @@ void DetectCoolerMasterV2Keyboards(hid_device_info* info, const std::string& nam
                 RGBController_CMKeyboardController* rgb_controller = new RGBController_CMKeyboardController(controller);
                 ResourceManager::get()->RegisterRGBController(rgb_controller);
             }
+            break;
 
             default:
                 LOG_DEBUG("[%s] Controller not created as the product ID %04X is missing from detector switch", name.c_str(), info->product_id);
@@ -297,6 +297,8 @@ REGISTER_HID_DETECTOR_IPU("Cooler Master MasterKeys Pro S",         DetectCooler
 REGISTER_HID_DETECTOR_IPU("Cooler Master MasterKeys Pro L",         DetectCoolerMasterV1Keyboards,  COOLERMASTER_VID,   COOLERMASTER_KEYBOARD_PRO_L_PID,          1,      0xFF00, 1);
 REGISTER_HID_DETECTOR_IPU("Cooler Master MasterKeys Pro L White",   DetectCoolerMasterV1Keyboards,  COOLERMASTER_VID,   COOLERMASTER_KEYBOARD_PRO_L_WHITE_PID,    1,      0xFF00, 1);
 REGISTER_HID_DETECTOR_IPU("Cooler Master MK850",                    DetectCoolerMasterV2Keyboards,  COOLERMASTER_VID,   COOLERMASTER_KEYBOARD_MK850_PID,          1,      0xFF00, 1);
+REGISTER_HID_DETECTOR_IPU("Cooler Master SK620 White",              DetectCoolerMasterV2Keyboards,  COOLERMASTER_VID,   COOLERMASTER_KEYBOARD_SK620W_PID,         1,      0xFF00, 1);
+REGISTER_HID_DETECTOR_IPU("Cooler Master SK620 Black",              DetectCoolerMasterV2Keyboards,  COOLERMASTER_VID,   COOLERMASTER_KEYBOARD_SK620B_PID,         1,      0xFF00, 1);
 REGISTER_HID_DETECTOR_IPU("Cooler Master SK622 White",              DetectCoolerMasterV2Keyboards,  COOLERMASTER_VID,   COOLERMASTER_KEYBOARD_SK622W_PID,         1,      0xFF00, 1);
 REGISTER_HID_DETECTOR_IPU("Cooler Master SK622 Black",              DetectCoolerMasterV2Keyboards,  COOLERMASTER_VID,   COOLERMASTER_KEYBOARD_SK622B_PID,         1,      0xFF00, 1);
 REGISTER_HID_DETECTOR_IPU("Cooler Master SK630",                    DetectCoolerMasterV2Keyboards,  COOLERMASTER_VID,   COOLERMASTER_KEYBOARD_SK630_PID,          1,      0xFF00, 1);

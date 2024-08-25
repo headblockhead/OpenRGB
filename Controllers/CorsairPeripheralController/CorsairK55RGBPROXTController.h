@@ -10,7 +10,7 @@
 #pragma once
 
 #include <string>
-#include <hidapi/hidapi.h>
+#include <hidapi.h>
 #include "RGBController.h"
 
 class CorsairK55RGBPROXTController
@@ -32,7 +32,6 @@ public:
              unsigned int direction
          );
     void SwitchMode(bool software);
-
 
     enum
     {
@@ -82,7 +81,6 @@ private:
 
     std::string firmware_version;
     std::string location;
-    device_type type;
 
     void LightingControl();
 };

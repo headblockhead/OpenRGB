@@ -12,7 +12,7 @@
 #pragma once
 
 #include <string>
-#include <hidapi/hidapi.h>
+#include <hidapi.h>
 #include "RGBController.h"
 
 #define LENOVO_MB_PACKET_LENGTH     64
@@ -55,6 +55,5 @@ public:
 private:
     hid_device* dev;
     std::string location;
-    std::string serial_number;
     std::string version;
 };

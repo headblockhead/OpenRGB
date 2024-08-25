@@ -11,7 +11,7 @@
 
 #pragma once
 
-#include <hidapi/hidapi.h>
+#include <hidapi.h>
 #include "RGBController.h"
 
 #define WRITE_PACKET_LENGTH 24
@@ -34,7 +34,6 @@ public:
 private:
     hid_device*     dev;
     std::string     location;
-    std::string     serial_number;
     std::string     version;
 
     void            InitialPacket();

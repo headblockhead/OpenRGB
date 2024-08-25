@@ -15,6 +15,7 @@
 #include <array>
 #include <bitset>
 #include "MSIMysticLight64Controller.h"
+#include "StringUtils.h"
 
 MSIMysticLight64Controller::MSIMysticLight64Controller
 (
@@ -69,10 +70,9 @@ std::string MSIMysticLight64Controller::GetDeviceName()
     hid_get_manufacturer_string(dev, tname, 256);
 
     /*-----------------------------------------------------*\
-    | Convert wchar_t into std::wstring into std::string    |
+    | Convert to std::string                                |
     \*-----------------------------------------------------*/
-    std::wstring wname = std::wstring(tname);
-    std::string name = std::string(wname.begin(), wname.end());
+    std::string name = StringUtils::wstring_to_string(tname);
 
     /*-----------------------------------------------------*\
     | Get the product string from HID                       |
@@ -82,9 +82,9 @@ std::string MSIMysticLight64Controller::GetDeviceName()
     /*-----------------------------------------------------*\
     | Append the product string to the manufacturer string  |
     \*-----------------------------------------------------*/
-    wname = std::wstring(tname);
-    name.append(" ").append(std::string(wname.begin(), wname.end()));
-    return name;
+    name.append(" ").append(StringUtils::wstring_to_string(tname));
+
+    return(name);
 }
 
 std::string MSIMysticLight64Controller::GetFWVersion()
@@ -103,17 +103,13 @@ std::string MSIMysticLight64Controller::GetDeviceLocation()
 
 std::string MSIMysticLight64Controller::GetSerial()
 {
-    wchar_t serial[256];
+    wchar_t serial_string[128];
+    int ret = hid_get_serial_number_string(dev, serial_string, 128);
 
-    /*-----------------------------------------------------*\
-    | Get the serial number string from HID                 |
-    \*-----------------------------------------------------*/
-    hid_get_serial_number_string(dev, serial, 256);
+    if(ret != 0)
+    {
+        return("");
+    }
 
-    /*-----------------------------------------------------*\
-    | Convert wchar_t into std::wstring into std::string    |
-    \*-----------------------------------------------------*/
-    std::wstring wserial = std::wstring(serial);
-
-    return (std::string(wserial.begin(), wserial.end()));
+    return(StringUtils::wstring_to_string(serial_string));
 }

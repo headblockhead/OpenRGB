@@ -13,7 +13,7 @@
 
 #include <array>
 #include <string>
-#include <hidapi/hidapi.h>
+#include <hidapi.h>
 #include "RGBController.h"
 
 #define EVGA_PERIPHERAL_PACKET_SIZE 65
@@ -198,7 +198,6 @@ private:
     bool IsResponseNotReadyPacket(unsigned char *buffer);
 
     std::string device_name;
-    std::string serial;
     std::string location;
     hid_device* dev;
 

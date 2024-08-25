@@ -12,7 +12,7 @@
 #pragma once
 
 #include <string>
-#include <hidapi/hidapi.h>
+#include <hidapi.h>
 #include "RGBController.h"
 
 #define ROCCAT_ELO_REPORT_SIZE  16
@@ -33,7 +33,6 @@ public:
 private:
     hid_device*     dev;
     std::string     location;
-    std::string     serial_number;
     std::string     version;
 
     void            SendInit();

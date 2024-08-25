@@ -10,7 +10,7 @@
 #pragma once
 
 #include <string>
-#include <hidapi/hidapi.h>
+#include <hidapi.h>
 #include "RGBController.h"
 #include "hidapi_wrapper.h"
 
@@ -109,5 +109,4 @@ private:
     hidapi_wrapper  wrapper;
     hid_device *    dev;
     std::string     location;
-    std::string     serial_number;
 };

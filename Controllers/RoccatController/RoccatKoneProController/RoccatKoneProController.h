@@ -11,7 +11,7 @@
 
 #pragma once
 
-#include <hidapi/hidapi.h>
+#include <hidapi.h>
 #include "RGBController.h"
 
 #define ROCCAT_KONE_PRO_CONTROL_MODE_PACKET_LENGTH    6
@@ -63,7 +63,6 @@ public:
 private:
     hid_device*     dev;
     std::string     location;
-    std::string     serial_number;
     std::string     version;
 
     unsigned int    CalculateCRC(unsigned char* bytes);

@@ -13,7 +13,7 @@
 
 #include <memory>
 #include <string>
-#include <hidapi/hidapi.h>
+#include <hidapi.h>
 #include "RGBController.h"
 
 enum
@@ -78,6 +78,5 @@ private:
     unsigned char               dev_index;
     unsigned char               feature_index;
     unsigned char               fctn_ase_id;
-    bool                        direct_state;
     std::shared_ptr<std::mutex> mutex;
 };

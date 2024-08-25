@@ -12,7 +12,7 @@
 #pragma once
 
 #include <string>
-#include <hidapi/hidapi.h>
+#include <hidapi.h>
 #include "RGBController.h"
 
 #define GIGABYTE_AORUS_MOUSE_REPORT_SIZE    8
@@ -54,6 +54,5 @@ private:
     hid_device* dev;
 
     std::string location;
-    std::string serial_number;
     std::string version;
 };

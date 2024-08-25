@@ -10,24 +10,25 @@
 \*---------------------------------------------------------*/
 
 #include "CorsairPeripheralV2Controller.h"
+#include "StringUtils.h"
 
 using namespace std::chrono_literals;
 
 CorsairPeripheralV2Controller::CorsairPeripheralV2Controller(hid_device* dev_handle, const char* path, std::string /*name*/)
 {
-    const uint8_t sz    = HID_MAX_STR;
-    wchar_t       tmp[sz];
-
     dev                 = dev_handle;
     location            = path;
 
-    hid_get_manufacturer_string(dev, tmp, sz);
-    std::wstring wName = std::wstring(tmp);
-    device_name = std::string(wName.begin(), wName.end());
+    /*---------------------------------------------------------*\
+    | Get device name from HID manufacturer and product strings |
+    \*---------------------------------------------------------*/
+    wchar_t name_string[HID_MAX_STR];
 
-    hid_get_product_string(dev, tmp, sz);
-    wName = std::wstring(tmp);
-    device_name.append(" ").append(std::string(wName.begin(), wName.end()));
+    hid_get_manufacturer_string(dev, name_string, HID_MAX_STR);
+    device_name = StringUtils::wstring_to_string(name_string);
+
+    hid_get_product_string(dev, name_string, HID_MAX_STR);
+    device_name.append(" ").append(StringUtils::wstring_to_string(name_string));
 
     /*---------------------------------------------------------*\
     | Get PID                                                   |
@@ -151,21 +152,15 @@ std::string CorsairPeripheralV2Controller::GetName()
 
 std::string CorsairPeripheralV2Controller::GetSerialString()
 {
-    const uint8_t   sz  = HID_MAX_STR;
-    wchar_t         tmp[sz];
-
-    int ret             = hid_get_serial_number_string(dev, tmp, sz);
+    wchar_t serial_string[128];
+    int ret = hid_get_serial_number_string(dev, serial_string, 128);
 
     if(ret != 0)
     {
-        LOG_DEBUG("[%s] Get HID Serial string failed", device_name.c_str());
         return("");
     }
 
-    std::wstring w_tmp  = std::wstring(tmp);
-    std::string serial  = std::string(w_tmp.begin(), w_tmp.end());
-
-    return serial;
+    return(StringUtils::wstring_to_string(serial_string));
 }
 
 void CorsairPeripheralV2Controller::SetRenderMode(corsair_v2_device_mode mode)

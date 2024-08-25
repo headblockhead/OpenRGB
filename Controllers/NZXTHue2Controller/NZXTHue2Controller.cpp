@@ -13,8 +13,9 @@
 #include <fstream>
 #include <iostream>
 #include <string>
-#include "NZXTHue2Controller.h"
 #include "LogManager.h"
+#include "NZXTHue2Controller.h"
+#include "StringUtils.h"
 
 NZXTHue2Controller::NZXTHue2Controller(hid_device* dev_handle, unsigned int rgb_channels, unsigned int fan_channels, const char* path)
 {
@@ -83,10 +84,7 @@ std::string NZXTHue2Controller::GetSerialString()
         return("");
     }
 
-    std::wstring return_wstring = serial_string;
-    std::string return_string(return_wstring.begin(), return_wstring.end());
-
-    return(return_string);
+    return(StringUtils::wstring_to_string(serial_string));
 }
 
 void NZXTHue2Controller::SendFan
@@ -300,7 +298,7 @@ void NZXTHue2Controller::SetChannelEffect
     \*-----------------------------------------------------*/
     for (std::size_t idx = 0; idx < num_colors; idx++)
     {
-        int pixel_idx = idx * 3;
+        int pixel_idx = (int)idx * 3;
         RGBColor color = colors[idx];
         color_data[pixel_idx + 0x00] = RGBGetGValue(color);
         color_data[pixel_idx + 0x01] = RGBGetRValue(color);
@@ -327,7 +325,7 @@ void NZXTHue2Controller::SetChannelLEDs
     \*-----------------------------------------------------*/
     for (std::size_t idx = 0; idx < num_colors; idx++)
     {
-        int pixel_idx = idx * 3;
+        int pixel_idx = (int)idx * 3;
         RGBColor color = colors[idx];
         color_data[pixel_idx + 0x00] = RGBGetGValue(color);
         color_data[pixel_idx + 0x01] = RGBGetRValue(color);

@@ -170,13 +170,13 @@ void NanoleafController::UpdateLEDs(std::vector<RGBColor>& colors)
         | 1         W               White channel (ignored)         |
         | 1         transitionTime  Transition time (x 100ms)       |
         \*---------------------------------------------------------*/
-        uint8_t size        = panel_ids.size();
+        std::size_t size    = panel_ids.size();
 
         uint8_t* message    = (uint8_t*)malloc((size * 7) + 1);
 
         message[0]          = (uint8_t)size;                                /* nPanels          */
 
-        for(int i = 0; i < size; i++)
+        for(unsigned int i = 0; i < size; i++)
         {
             message[(7 * i) + 0 + 1] = (uint8_t)panel_ids[i];               /* panelId          */
             message[(7 * i) + 1 + 1] = (uint8_t)1;                          /* nFrames          */
@@ -187,7 +187,7 @@ void NanoleafController::UpdateLEDs(std::vector<RGBColor>& colors)
             message[(7 * i) + 6 + 1] = (uint8_t)0;                          /* transitionTime   */
         }
 
-        external_control_socket.udp_write((char*)message, (size * 7) + 1);
+        external_control_socket.udp_write((char*)message, ((int)size * 7) + 1);
 
         free(message);
     }
@@ -208,14 +208,14 @@ void NanoleafController::UpdateLEDs(std::vector<RGBColor>& colors)
         | 1         W               White channel (ignored)         |
         | 2         transitionTime  Transition time (x 100ms)       |
         \*---------------------------------------------------------*/
-        uint8_t size        = panel_ids.size();
+        std::size_t size    = panel_ids.size();
 
         uint8_t* message    = (uint8_t*)malloc((size * 8) + 2);
 
         message[0]          = (uint8_t)(size >> 8);                         /* nPanels H        */
         message[1]          = (uint8_t)(size & 0xFF);                       /* nPanels L        */
 
-        for(int i = 0; i < size; i++)
+        for(unsigned int i = 0; i < size; i++)
         {
             message[(8 * i) + 0 + 2] = (uint8_t)(panel_ids[i] >> 8);        /* panelId H        */
             message[(8 * i) + 1 + 2] = (uint8_t)(panel_ids[i] & 0xFF);      /* panelId L        */
@@ -227,7 +227,7 @@ void NanoleafController::UpdateLEDs(std::vector<RGBColor>& colors)
             message[(8 * i) + 7 + 2] = (uint8_t)0;                          /* transitionTime L */
         }
 
-        external_control_socket.udp_write((char *)message, (size * 8) + 2);
+        external_control_socket.udp_write((char *)message, ((int)size * 8) + 2);
 
         free(message);
     }

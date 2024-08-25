@@ -13,7 +13,7 @@
 
 #include <chrono>
 #include <vector>
-#include <hidapi/hidapi.h>
+#include <hidapi.h>
 #include "RGBController.h"
 
 #define THERMALTAKE_QUAD_PACKET_SIZE        193
@@ -64,7 +64,6 @@ private:
     unsigned char           current_mode;
     unsigned char           current_speed;
     std::string             device_name;
-    std::string             serial;
     std::string             location;
 
     uint8_t                 tt_quad_buffer[THERMALTAKE_QUAD_NUM_CHANNELS][THERMALTAKE_QUAD_PACKET_SIZE];

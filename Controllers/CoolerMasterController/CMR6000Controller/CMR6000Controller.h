@@ -13,7 +13,7 @@
 
 #include <array>
 #include <string>
-#include <hidapi/hidapi.h>
+#include <hidapi.h>
 #include "RGBController.h"
 
 #define COOLERMASTER_RADEON_6000_PID            0x014D
@@ -78,7 +78,6 @@ public:
 
 private:
     std::string     device_name;
-    std::string     serial;
     std::string     location;
     hid_device*     dev;
     uint16_t        pid;

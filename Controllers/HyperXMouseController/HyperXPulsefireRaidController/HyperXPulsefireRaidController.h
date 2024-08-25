@@ -12,7 +12,7 @@
 #pragma once
 
 #include <string>
-#include <hidapi/hidapi.h>
+#include <hidapi.h>
 #include "RGBController.h"
 
 #define HYPERX_PULSFIRE_RAID_PACKET_DATA_LENGTH         264
@@ -44,7 +44,6 @@ protected:
 
 private:
     std::string location;
-    std::string serial_number;
     std::string version;
 
     void        Send(unsigned char* packet);

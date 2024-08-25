@@ -12,6 +12,7 @@
 
 #include <string.h>
 #include "LianLiUniHubALController.h"
+#include "StringUtils.h"
 
 using namespace std::chrono_literals;
 
@@ -43,8 +44,7 @@ std::string LianLiUniHubALController::GetFirmwareVersionString()
         return ("");
     }
 
-    std::wstring return_wstring = product_string;
-    std::string return_string(return_wstring.begin(),return_wstring.end());
+    std::string return_string = StringUtils::wstring_to_string(product_string);
 
     return(return_string.substr(return_string.find_last_of("-")+1,4).c_str());
 }
@@ -64,8 +64,7 @@ std::string LianLiUniHubALController::GetSerialString()
         return ("");
     }
 
-    std::wstring return_wstring = serial_string;
-    std::string return_string(return_wstring.begin(), return_wstring.end());
+    std::string return_string = StringUtils::wstring_to_string(serial_string);
 
     return(return_string);
 
@@ -106,18 +105,18 @@ void LianLiUniHubALController::SetChannelLEDs(unsigned char channel, RGBColor * 
             //Determine current position of led_data array from colors array
             cur_led_idx = ((mod_led_idx + (fan_idx * 8)) * 3);
 
-            fan_led_data[cur_led_idx + 0] = (unsigned char)RGBGetRValue(colors[led_idx]) * brightness;
-            fan_led_data[cur_led_idx + 1] = (unsigned char)RGBGetBValue(colors[led_idx]) * brightness;
-            fan_led_data[cur_led_idx + 2] = (unsigned char)RGBGetGValue(colors[led_idx]) * brightness;
+            fan_led_data[cur_led_idx + 0] = (unsigned char)(RGBGetRValue(colors[led_idx]) * brightness);
+            fan_led_data[cur_led_idx + 1] = (unsigned char)(RGBGetBValue(colors[led_idx]) * brightness);
+            fan_led_data[cur_led_idx + 2] = (unsigned char)(RGBGetGValue(colors[led_idx]) * brightness);
         }
         else                        // Edge LEDs, 12 LEDs per fan
         {
             //Determine current position of led_data array from colors array
             cur_led_idx = (((mod_led_idx - 8) + (fan_idx * 12)) * 3);
 
-            edge_led_data[cur_led_idx + 0]  = (unsigned char)RGBGetRValue(colors[led_idx]) * brightness;
-            edge_led_data[cur_led_idx + 1]  = (unsigned char)RGBGetBValue(colors[led_idx]) * brightness;
-            edge_led_data[cur_led_idx + 2]  = (unsigned char)RGBGetGValue(colors[led_idx]) * brightness;
+            edge_led_data[cur_led_idx + 0]  = (unsigned char)(RGBGetRValue(colors[led_idx]) * brightness);
+            edge_led_data[cur_led_idx + 1]  = (unsigned char)(RGBGetBValue(colors[led_idx]) * brightness);
+            edge_led_data[cur_led_idx + 2]  = (unsigned char)(RGBGetGValue(colors[led_idx]) * brightness);
         }
     }
 

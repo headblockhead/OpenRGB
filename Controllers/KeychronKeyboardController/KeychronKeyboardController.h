@@ -13,7 +13,7 @@
 
 #include "RGBController.h"
 #include <string>
-#include <hidapi/hidapi.h>
+#include <hidapi.h>
 
 #define REPORT_ID                   0x00
 #define PACKET_DATA_LENGTH          64
@@ -106,7 +106,6 @@ protected:
 
 private:
     std::string                 location;
-    std::string                 serial_number;
     std::string                 version;
     std::vector<unsigned int>   led_sequence_positions;
 

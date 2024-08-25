@@ -14,6 +14,7 @@
 #include <string>
 #include "CMKeyboardV2Controller.h"
 #include "LogManager.h"
+#include "StringUtils.h"
 
 CMKeyboardV2Controller::CMKeyboardV2Controller(hid_device* dev_handle, hid_device_info* dev_info) : CMKeyboardAbstractController(dev_handle, dev_info)
 {
@@ -97,8 +98,8 @@ std::string CMKeyboardV2Controller::_GetFirmwareVersion()
         cVersionStr[i++] = it;
     }
 
-    std::u16string usFirmwareVersion(reinterpret_cast<const char16_t*>(cVersionStr+8));
-    std::string sFirmwareVersion(usFirmwareVersion.begin(), usFirmwareVersion.end());
+    std::wstring wsFirmwareVersion(reinterpret_cast<const wchar_t*>(cVersionStr+8));
+    std::string sFirmwareVersion(StringUtils::wstring_to_string(wsFirmwareVersion));
 
     LOG_VERBOSE("[%s] GetFirmwareVersion(): [%s]", m_deviceName.c_str(), sFirmwareVersion.c_str());
 
@@ -450,13 +451,17 @@ void CMKeyboardV2Controller::SetMode(mode selectedMode)
     std::vector<uint8_t> data1(64, 0);
     std::vector<uint8_t> data2(64, 0);
 
-    uint8_t cColor1_R, cColor1_G, cColor1_B;
-    uint8_t cColor2_R, cColor2_G, cColor2_B;
+    uint8_t cColor1_R   = 0;
+    uint8_t cColor1_G   = 0;
+    uint8_t cColor1_B   = 0;
+    uint8_t cColor2_R   = 0;
+    uint8_t cColor2_G   = 0;
+    uint8_t cColor2_B   = 0;
 
-    RGBColor color1    = 0;
-    RGBColor color2    = 0;
-    uint8_t cSpeed1    = 0;
-    uint8_t cSpeed2    = 0;
+    RGBColor color1     = 0;
+    RGBColor color2     = 0;
+    uint8_t cSpeed1     = 0;
+    uint8_t cSpeed2     = 0;
 
     _UpdateSpeed(selectedMode, cSpeed1, cSpeed2);
 

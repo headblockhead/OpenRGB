@@ -11,7 +11,7 @@
 
 #pragma once
 
-#include <hidapi/hidapi.h>
+#include <hidapi.h>
 #include "RGBController.h"
 
 #define ROCCAT_KONE_PRO_AIR_RGB_PACKET_LENGTH            16
@@ -56,7 +56,6 @@ public:
 private:
     hid_device*     dev;
     std::string     location;
-    std::string     serial_number;
     std::string     version;
 
     void            SendRGB(bool direct, std::vector<RGBColor> colors, unsigned char mode_value, unsigned char speed, unsigned char brightness);

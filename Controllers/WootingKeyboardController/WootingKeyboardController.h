@@ -12,7 +12,7 @@
 #pragma once
 
 #include <string>
-#include <hidapi/hidapi.h>
+#include <hidapi.h>
 #include "RGBController.h"
 #include "LogManager.h"
 
@@ -63,7 +63,6 @@ public:
     std::string         vendor;
     std::string         description;
     std::string         location;
-    std::string         serial;
     uint8_t             wooting_type;
     uint8_t             key_code_limit;
 

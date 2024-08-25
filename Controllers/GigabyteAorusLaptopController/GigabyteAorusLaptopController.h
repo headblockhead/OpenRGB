@@ -12,7 +12,7 @@
 #pragma once
 
 #include <string>
-#include <hidapi/hidapi.h>
+#include <hidapi.h>
 #include "RGBController.h"
 
 #define GIGABYTE_AORUS_LAPTOP_REPORT_SIZE      8
@@ -69,6 +69,5 @@ private:
     unsigned char   GetColourIndex(unsigned char red, unsigned char green, unsigned char blue);
 
     std::string location;
-    std::string serial_number;
     std::string version;
 };

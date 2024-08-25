@@ -1,21 +1,23 @@
-/*-----------------------------------------*\
-|  SteelSeriesApexRegions.h                 |
-|                                           |
-|  Region specific SKU settings for the     |
-|  Apex 5/7/Pro and TKL keyboards           |
-|                                           |
-|  Joseph East (dripsnek) 2021              |
-\*-----------------------------------------*/
+/*---------------------------------------------------------*\
+| SteelSeriesApexRegions.h                                  |
+|                                                           |
+|   Region settings for SteelSeries Apex 5/7/Pro and TKL    |
+|                                                           |
+|   Joseph East (dripsnek)                             2021 |
+|                                                           |
+|   This file is part of the OpenRGB project                |
+|   SPDX-License-Identifier: GPL-2.0-only                   |
+\*---------------------------------------------------------*/
 
 #pragma once
 
-#define NA  0xFFFFFFFF
-
-#include <string>
 #include <map>
+#include <string>
 #include <vector>
 #include "RGBController_SteelSeriesApex.h"
 #include "RGBControllerKeyNames.h"
+
+#define NA  0xFFFFFFFF
 
 /*----------------------------------------------------------------------*\
 | As of firmware 4.1.0 there are in total 111 possible standard keys     |
@@ -313,6 +315,7 @@ static const std::map<std::string, sku_patch> patch_lookup =
     { "64739", { apex_tkl_us_region_patch, apex_iso_region_patch, apex_uk_keyname_lookup }},
     { "64738", { apex_tkl_us_region_patch, apex_iso_region_patch, apex_nor_keyname_lookup }},
     { "64737", { apex_tkl_us_region_patch, apex_jp_region_patch, apex_jp_keyname_lookup }},
+    { "64856", { apex_tkl_us_region_patch, apex_iso_region_patch, apex_uk_keyname_lookup }},
     { "64734", { apex_tkl_us_region_patch, {}, {} }},
 
     { "64631", { {}, apex_iso_region_patch, apex_nor_keyname_lookup }},

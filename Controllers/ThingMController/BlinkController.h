@@ -13,13 +13,15 @@
 
 #include <array>
 #include <string>
-#include <hidapi/hidapi.h>
+#include <hidapi.h>
 
 #define BLINK_PACKET_SIZE       9  //Includes extra first byte for non HID Report packets
 
 #define BLINK_MODE_OFF          0
 #define BLINK_MODE_DIRECT       1
 #define BLINK_MODE_FADE         2
+
+#define HID_MAX_STR             255
 
 class BlinkController
 {

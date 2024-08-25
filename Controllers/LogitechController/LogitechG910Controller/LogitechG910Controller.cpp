@@ -11,6 +11,7 @@
 
 #include <cstring>
 #include "LogitechG910Controller.h"
+#include "StringUtils.h"
 
 LogitechG910Controller::LogitechG910Controller(hid_device* dev_handle_0x11, hid_device* dev_handle_0x12)
 {
@@ -34,10 +35,7 @@ std::string LogitechG910Controller::GetSerialString()
         return("");
     }
 
-    std::wstring return_wstring = serial_string;
-    std::string return_string(return_wstring.begin(), return_wstring.end());
-
-    return(return_string);
+    return(StringUtils::wstring_to_string(serial_string));
 }
 
 void LogitechG910Controller::Commit()
@@ -76,7 +74,7 @@ void LogitechG910Controller::SetMode
 
 void LogitechG910Controller::SendCommit()
 {
-    char usb_buf[20];
+    unsigned char usb_buf[20];
 
     /*-----------------------------------------------------*\
     | Zero out buffer                                       |
@@ -94,8 +92,8 @@ void LogitechG910Controller::SendCommit()
     /*-----------------------------------------------------*\
     | Send packet                                           |
     \*-----------------------------------------------------*/
-    hid_write(dev_pkt_0x11, (unsigned char *)usb_buf, 20);
-    hid_read(dev_pkt_0x11, (unsigned char *)usb_buf, 20);
+    hid_write(dev_pkt_0x11, usb_buf, 20);
+    hid_read(dev_pkt_0x11, usb_buf, 20);
 }
 
 void LogitechG910Controller::SendDirectFrame
@@ -105,7 +103,7 @@ void LogitechG910Controller::SendDirectFrame
     unsigned char *     frame_data
     )
 {
-    char usb_buf[64];
+    unsigned char usb_buf[64];
 
     /*-----------------------------------------------------*\
     | Zero out buffer                                       |
@@ -130,8 +128,8 @@ void LogitechG910Controller::SendDirectFrame
     /*-----------------------------------------------------*\
     | Send packet                                           |
     \*-----------------------------------------------------*/
-    hid_write(dev_pkt_0x12, (unsigned char *)usb_buf, 64);
-    hid_read(dev_pkt_0x11, (unsigned char *)usb_buf, 20);
+    hid_write(dev_pkt_0x12, usb_buf, 64);
+    hid_read(dev_pkt_0x11, usb_buf, 20);
 }
 
 void LogitechG910Controller::SendMode
@@ -144,7 +142,7 @@ void LogitechG910Controller::SendMode
     unsigned char       blue
     )
 {
-    char usb_buf[20];
+    unsigned char usb_buf[20];
 
     /*-----------------------------------------------------*\
     | Zero out buffer                                       |
@@ -183,6 +181,6 @@ void LogitechG910Controller::SendMode
     /*-----------------------------------------------------*\
     | Send packet                                           |
     \*-----------------------------------------------------*/
-    hid_write(dev_pkt_0x11, (unsigned char *)usb_buf, 20);
-    hid_read(dev_pkt_0x11, (unsigned char *)usb_buf, 20);
+    hid_write(dev_pkt_0x11, usb_buf, 20);
+    hid_read(dev_pkt_0x11, usb_buf, 20);
 }

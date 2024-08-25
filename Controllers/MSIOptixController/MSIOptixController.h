@@ -12,7 +12,7 @@
 #pragma once
 
 #include <string>
-#include <hidapi/hidapi.h>
+#include <hidapi.h>
 #include "RGBController.h"
 
 #define MSI_OPTIX_REPORT_SIZE 168
@@ -82,7 +82,6 @@ protected:
 
 private:
     std::string                 location;
-    std::string                 serial_number;
     std::string                 version;
 
     unsigned char               GetMysteriousFlag(unsigned char mode_value);

@@ -12,7 +12,7 @@
 #pragma once
 
 #include <string>
-#include <hidapi/hidapi.h>
+#include <hidapi.h>
 #include "RGBController.h"
 
 #define N5312A_REPORT_ID           0x07
@@ -55,7 +55,6 @@ private:
     hid_device* dev;
 
     std::string location;
-    std::string serial_number;
     std::string version;
 
     void        SendInit();

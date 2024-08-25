@@ -13,7 +13,7 @@
 
 #include <string>
 #include <vector>
-#include <hidapi/hidapi.h>
+#include <hidapi.h>
 #include "RGBController.h"
 #include "KeyboardLayoutManager.h"
 
@@ -26,7 +26,7 @@ class WinbondGamingKeyboardController
 public:
     WinbondGamingKeyboardController(hid_device *dev_handle, const hid_device_info &info, const std::string& name);
 
-    std::string GetSerialString() const;
+    std::string GetSerialString();
 
     const char* GetDeviceLocation() const
     {

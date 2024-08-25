@@ -11,6 +11,7 @@
 
 #include <cstring>
 #include "LogitechGLightsyncController.h"
+#include "StringUtils.h"
 
 LogitechGLightsyncController::LogitechGLightsyncController(hid_device* dev_cmd_handle, hid_device *dev_handle, const char *path, unsigned char hid_dev_index, unsigned char hid_feature_index, unsigned char hid_fctn_ase_id)
 {
@@ -54,10 +55,7 @@ std::string LogitechGLightsyncController::GetSerialString()
         return("");
     }
 
-    std::wstring return_wstring = serial_string;
-    std::string return_string(return_wstring.begin(), return_wstring.end());
-
-    return(return_string);
+    return(StringUtils::wstring_to_string(serial_string));
 }
 
 void LogitechGLightsyncController::UpdateMouseLED(
@@ -133,8 +131,8 @@ void LogitechGLightsyncController::UpdateMouseLED(
 
 void LogitechGLightsyncController::SetDirectMode(bool direct)
 {
-    char cmd_buf[7];
-    char usb_buf[20];
+    unsigned char cmd_buf[7];
+    unsigned char usb_buf[20];
 
     /*-----------------------------------------------------*\
     | Zero out buffer                                       |
@@ -171,12 +169,12 @@ void LogitechGLightsyncController::SetDirectMode(bool direct)
     {
         std::lock_guard<std::mutex> guard(*mutex);
 
-        hid_write(cmd_dev, (unsigned char *)cmd_buf, 7);
-        hid_read(dev, (unsigned char *)usb_buf, 20);
+        hid_write(cmd_dev, cmd_buf, 7);
+        hid_read(dev, usb_buf, 20);
     }
     else
     {
-        hid_write(cmd_dev, (unsigned char *)cmd_buf, 7);
-        hid_read(dev, (unsigned char *)usb_buf, 20);
+        hid_write(cmd_dev, cmd_buf, 7);
+        hid_read(dev, usb_buf, 20);
     }
 }

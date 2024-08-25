@@ -10,11 +10,13 @@
 |   SPDX-License-Identifier: GPL-2.0-only                   |
 \*---------------------------------------------------------*/
 
+#include "Detector.h"
 #include "i2c_smbus_i801.h"
 #include "ResourceManager.h"
 
 #ifdef _WIN32
 #include "OlsApi.h"
+#include "wmi.h"
 #elif _MACOSX_X86_X64
 #include "macUSPCIOAccess.h"
 #endif
@@ -176,7 +178,7 @@ out:
 int i2c_smbus_i801::i801_block_transaction(i2c_smbus_data *data, char read_write, int command, int hwpec)
 {
     int result = 0;
-    unsigned char hostc;
+    //unsigned char hostc;
 
     //if (command == I2C_SMBUS_I2C_BLOCK_DATA)
     //{
@@ -230,7 +232,7 @@ int i2c_smbus_i801::i801_block_transaction(i2c_smbus_data *data, char read_write
 *   I2C write uses cmd=I801_BLOCK_DATA, I2C_EN=1
 *   I2C read uses cmd=I801_I2C_BLOCK_DATA
 */
-int i2c_smbus_i801::i801_block_transaction_byte_by_byte(i2c_smbus_data *data, char read_write, int command, int hwpec)
+int i2c_smbus_i801::i801_block_transaction_byte_by_byte(i2c_smbus_data *data, char read_write, int command, int /*hwpec*/)
 {
     int i, len;
     int smbcmd;
@@ -536,14 +538,12 @@ s32 i2c_smbus_i801::i2c_smbus_xfer(u8 addr, char read_write, u8 command, int siz
     return result;
 }
 
-s32 i2c_smbus_i801::i2c_xfer(u8 addr, char read_write, int* size, u8* data)
+s32 i2c_smbus_i801::i2c_xfer(u8 /*addr*/, char /*read_write*/, int* /*size*/, u8* /*data*/)
 {
     return -1;
 }
 
-#include "Detector.h"
 #ifdef _WIN32
-#include "wmi.h"
 
 bool i2c_smbus_i801_detect()
 {
@@ -560,7 +560,7 @@ bool i2c_smbus_i801_detect()
     // Query WMI for Win32_PnPSignedDriver entries with names matching "SMBUS" or "SM BUS"
     // These devices may be browsed under Device Manager -> System Devices
     std::vector<QueryObj> q_res_PnPSignedDriver;
-    hres = wmi.query("SELECT * FROM Win32_PnPSignedDriver WHERE Description LIKE '\%SMBUS\%' OR Description LIKE '\%SM BUS\%'", q_res_PnPSignedDriver);
+    hres = wmi.query("SELECT * FROM Win32_PnPSignedDriver WHERE Description LIKE '%SMBUS%' OR Description LIKE '%SM BUS%'", q_res_PnPSignedDriver);
 
     if (hres)
     {
@@ -617,7 +617,7 @@ bool i2c_smbus_i801_detect()
                     continue;
                 }
 
-                uint8_t host_config = ReadPciConfigWord(pciAddress, SMBHSTCFG);
+                uint8_t host_config = (uint8_t)ReadPciConfigWord(pciAddress, SMBHSTCFG);
                 if ((host_config & SMBHSTCFG_HST_EN) == 0)
                 {
                     continue;
@@ -637,7 +637,9 @@ bool i2c_smbus_i801_detect()
 
     return(true);
 }
+
 #elif _MACOSX_X86_X64
+
 bool i2c_smbus_i801_detect()
 {
     if(!GetMacUSPCIODriverStatus())
@@ -672,6 +674,7 @@ bool i2c_smbus_i801_detect()
 
     return(true);
 }
+
 #endif
 
 REGISTER_I2C_BUS_DETECTOR(i2c_smbus_i801_detect);

@@ -13,7 +13,7 @@
 #include "i2c_smbus.h"
 
 typedef unsigned char viper_dev_id;
-typedef unsigned short viper_register;
+typedef unsigned char viper_register;
 
 enum
 {
@@ -50,5 +50,4 @@ private:
     i2c_smbus_interface *bus;
     viper_dev_id dev;
     unsigned char mode;
-    unsigned char speed;
 };

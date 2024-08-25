@@ -299,9 +299,9 @@ void RGBController_DRGB::DeviceUpdateLEDs()
                 }
             }
             unsigned int    col_packets = 1 ;
-            if(led_index > 316)
+            if(led_index > DRGB_V4_ONE_PACKAGE_SIZE)
             {
-                col_packets = ((led_index - 316) / 340) + (((led_index - 316) % 340) > 0);
+                col_packets = 1 + ((led_index - DRGB_V4_ONE_PACKAGE_SIZE) / DRGB_V4_PACKAGE_SIZE) + (((led_index - DRGB_V4_ONE_PACKAGE_SIZE) % DRGB_V4_PACKAGE_SIZE) > 0);
             }
             controller->SendPacket(&RGBData[0], col_packets,led_index);
             break;
@@ -334,7 +334,7 @@ void RGBController_DRGB::DeviceUpdateLEDs()
                     break;
                 }
             }
-            unsigned int col_packets    = (led_index / 21) + ((led_index % 64) > 0);
+            unsigned int    col_packets     = (led_index / DRGB_V3_PACKAGE_SIZE) + ((led_index % DRGB_V3_PACKAGE_SIZE) > 0);
             controller->SendPacketFS(&ArrayData[0], 1,0);
             controller->SendPacketFS(&RGBData[0], col_packets,1);
             break;
@@ -346,19 +346,20 @@ void RGBController_DRGB::DeviceUpdateLEDs()
                 unsigned char   RGBData[256*3]  = {0};
                 unsigned char   ArrayData[64]   = {0};
                 unsigned char   LEDnum          = zones[zone_idx].leds_count;
-                for(unsigned int i=0; i<LEDnum;i++)
+                for(unsigned int i = 0; i < LEDnum; i++)
                 {
                     unsigned int RGBcolors = zones[zone_idx].colors[i];
                     RGBData[i * 3]      = RGBcolors & 0xFF;
                     RGBData[i * 3 +1]   = (RGBcolors >> 8) & 0xFF;
                     RGBData[i * 3 +2]   = (RGBcolors >> 16) & 0xFF;
                 }
-                unsigned char   NumPackets = (LEDnum / 20) + ((LEDnum % 20) > 0);
-                for (unsigned int CurrPacket = 1 ; CurrPacket <= NumPackets; CurrPacket++)
+
+                unsigned char   NumPackets      = LEDnum / DRGB_V2_PACKAGE_SIZE + ((LEDnum % DRGB_V2_PACKAGE_SIZE) > 0);
+                for(unsigned char CurrPacket = 1; CurrPacket <= NumPackets; CurrPacket++)
                 {
                     ArrayData[0] = CurrPacket;
                     ArrayData[1] = NumPackets;
-                    ArrayData[2] = zone_idx;
+                    ArrayData[2] = (unsigned char)zone_idx;
                     ArrayData[3] = 0xBB;
                     for(unsigned int i=0; i<60;i++)
                     {

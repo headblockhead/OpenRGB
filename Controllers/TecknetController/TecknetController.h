@@ -12,11 +12,12 @@
 #pragma once
 
 #include <string>
-#include <hidapi/hidapi.h>
+#include <hidapi.h>
 
+#define HID_MAX_STR                   255
 #define TECKNET_COLOUR_MODE_DATA_SIZE (sizeof(tecknet_colour_mode_data[0]) / sizeof(tecknet_colour_mode_data[0][0]))
-#define TECKNET_DEVICE_NAME_SIZE (sizeof(device_name) / sizeof(device_name[ 0 ]))
-#define TECKNET_PACKET_LENGTH    0x10                       //16 bytes
+#define TECKNET_DEVICE_NAME_SIZE      (sizeof(device_name) / sizeof(device_name[ 0 ]))
+#define TECKNET_PACKET_LENGTH         0x10                  //16 bytes
 
 enum
 {
@@ -65,7 +66,6 @@ public:
 
 private:
     std::string             device_name;
-    std::string             serial;
     std::string             location;
     hid_device*             dev;
 

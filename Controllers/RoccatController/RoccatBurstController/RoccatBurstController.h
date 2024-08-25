@@ -12,7 +12,7 @@
 #pragma once
 
 #include "RGBController.h"
-#include <hidapi/hidapi.h>
+#include <hidapi.h>
 
 #define ROCCAT_BURST_CONTROL_MODE_PACKET_LENGTH    6
 #define ROCCAT_BURST_DIRECT_MODE_PACKET_LENGTH     11
@@ -63,7 +63,6 @@ public:
 private:
     hid_device*     dev;
     std::string     location;
-    std::string     serial_number;
     std::string     version;
 
     unsigned int    CalculateCRC(unsigned char* bytes);

@@ -12,7 +12,7 @@
 #pragma once
 
 #include <string>
-#include <hidapi/hidapi.h>
+#include <hidapi.h>
 #include "RGBController.h"
 
 #define MSI_VIGOR_GK30_REPORT_SIZE  8
@@ -73,6 +73,4 @@ private:
     std::string     location;
     std::string     serial_number;
     std::string     version;
-
-    unsigned char color_test = 0x00;
 };

@@ -49,7 +49,7 @@ NetworkClientInfo::~NetworkClientInfo()
 {
     if(client_sock != INVALID_SOCKET)
     {
-        LOG_INFO("Closing server connection: %s", client_ip.c_str());
+        LOG_INFO("NetworkServer: Closing server connection: %s", client_ip.c_str());
         delete client_listen_thread;
         shutdown(client_sock, SD_RECEIVE);
         closesocket(client_sock);
@@ -261,7 +261,7 @@ void NetworkServer::StartServer()
 
     if(err)
     {
-        printf("Error: Unable to get address.\n");
+        LOG_ERROR("NetworkServer: Unable to get address.");
         WSACleanup();
         return;
     }
@@ -275,7 +275,7 @@ void NetworkServer::StartServer()
 
         if(server_sock[socket_count] == INVALID_SOCKET)
         {
-            printf("Error: network socket could not be created\n");
+            LOG_ERROR("NetworkServer: Network socket could not be created.");
             WSACleanup();
             return;
         }
@@ -287,23 +287,23 @@ void NetworkServer::StartServer()
         {
             if(errno == EADDRINUSE)
             {
-                printf("Error: Could not bind network socket \nIs port %hu already being used?\n", GetPort());
+                LOG_ERROR("NetworkServer: Could not bind network socket. Is port %hu already being used?", GetPort());
             }
             else if(errno == EACCES)
             {
-                printf("Error: Access to socket was denied.\n");
+                LOG_ERROR("NetworkServer: Could not bind network socket. Access to socket was denied.");
             }
             else if(errno == EBADF)
             {
-                printf("Error: sockfd is not a valid file descriptor.\n");
+                LOG_ERROR("NetworkServer: Could not bind network socket. sockfd is not a valid file descriptor.");
             }
             else if(errno == EINVAL)
             {
-                printf("Error: The socket is already bound to an address, or addrlen is wrong, or addr is not a valid address for this socket's domain..\n");
+                LOG_ERROR("NetworkServer: Could not bind network socket. The socket is already bound to an address, or addrlen is wrong, or addr is not a valid address for this socket's domain.");
             }
             else if(errno == ENOTSOCK)
             {
-                printf("Error: The file descriptor sockfd does not refer to a socket.\n");
+                LOG_ERROR("NetworkServer: Could not bind network socket. The file descriptor sockfd does not refer to a socket.");
             }
             else
             {
@@ -311,7 +311,7 @@ void NetworkServer::StartServer()
                 | errno could be a Linux specific error, see:               |
                 | https://man7.org/linux/man-pages/man2/bind.2.html         |
                 \*---------------------------------------------------------*/
-                printf("Error: Could not bind network socket, error code:%d\n", errno);
+                LOG_ERROR("NetworkManager: Could not bind network socket. Error code: %d.", errno);
             }
 
             WSACleanup();
@@ -383,7 +383,7 @@ void NetworkServer::ConnectionThreadFunction(int socket_idx)
     /*---------------------------------------------------------*\
     | This thread handles client connections                    |
     \*---------------------------------------------------------*/
-    printf("Network connection thread started on port %hu\n", GetPort());
+    LOG_INFO("NetworkServer: Network connection thread started on port %hu", GetPort());
 
     while(server_online == true)
     {
@@ -399,7 +399,7 @@ void NetworkServer::ConnectionThreadFunction(int socket_idx)
         \*---------------------------------------------------------*/
         if(listen(server_sock[socket_idx], 10) < 0)
         {
-            printf("Connection thread closed\r\n");
+            LOG_INFO("NetworkServer: Connection thread closed");
             server_online = false;
 
             return;
@@ -415,7 +415,7 @@ void NetworkServer::ConnectionThreadFunction(int socket_idx)
 
         if(client_info->client_sock < 0)
         {
-            printf("Connection thread closed\r\n");
+            LOG_INFO("NetworkServer: Connection thread closed");
             server_online = false;
 
             server_listening = false;
@@ -474,7 +474,7 @@ void NetworkServer::ConnectionThreadFunction(int socket_idx)
         ClientInfoChanged();
     }
 
-    printf("Connection thread closed\r\n");
+    LOG_INFO("NetworkServer: Connection thread closed");
     server_online = false;
     server_listening = false;
     ServerListeningChanged();
@@ -544,7 +544,7 @@ void NetworkServer::ListenThreadFunction(NetworkClientInfo * client_info)
 {
     SOCKET client_sock = client_info->client_sock;
 
-    printf("Network server started\n");
+    LOG_INFO("NetworkServer: Network server started");
 
     /*---------------------------------------------------------*\
     | This thread handles messages received from clients        |
@@ -564,6 +564,7 @@ void NetworkServer::ListenThreadFunction(NetworkClientInfo * client_info)
 
             if(bytes_read <= 0)
             {
+                LOG_ERROR("NetworkServer: recv_select failed receiving magic, closing listener");
                 goto listen_done;
             }
 
@@ -572,6 +573,7 @@ void NetworkServer::ListenThreadFunction(NetworkClientInfo * client_info)
             \*---------------------------------------------------------*/
             if(header.pkt_magic[i] != openrgb_sdk_magic[i])
             {
+                LOG_ERROR("NetworkServer: Invalid magic received");
                 continue;
             }
         }
@@ -591,6 +593,7 @@ void NetworkServer::ListenThreadFunction(NetworkClientInfo * client_info)
 
             if(tmp_bytes_read <= 0)
             {
+                LOG_ERROR("NetworkServer: recv_select failed receiving header, closing listener");
                 goto listen_done;
             }
 
@@ -599,10 +602,9 @@ void NetworkServer::ListenThreadFunction(NetworkClientInfo * client_info)
         /*---------------------------------------------------------*\
         | Header received, now receive the data                     |
         \*---------------------------------------------------------*/
+        bytes_read = 0;
         if(header.pkt_size > 0)
         {
-            bytes_read = 0;
-
             data = new char[header.pkt_size];
 
             do
@@ -613,6 +615,7 @@ void NetworkServer::ListenThreadFunction(NetworkClientInfo * client_info)
 
                 if(tmp_bytes_read <= 0)
                 {
+                    LOG_ERROR("NetworkServer: recv_select failed receiving data, closing listener");
                     goto listen_done;
                 }
                 bytes_read += tmp_bytes_read;
@@ -682,10 +685,29 @@ void NetworkServer::ListenThreadFunction(NetworkClientInfo * client_info)
                     break;
                 }
 
-                if(header.pkt_dev_idx < controllers.size())
+                /*---------------------------------------------------------*\
+                | Verify the color description size (first 4 bytes of data) |
+                | matches the packet size in the header                     |
+                |                                                           |
+                | If protocol version is 4 or below, allow the description  |
+                | size to be zero.  This allows backwards compatibility with|
+                | versions of the OpenRGB.NET SDK implementation which had  |
+                | a bug where this field would always be zero.              |
+                \*---------------------------------------------------------*/
+                if((header.pkt_size == *((unsigned int*)data))
+                || ((client_info->client_protocol_version <= 4)
+                 && (*((unsigned int*)data) == 0)))
                 {
-                    controllers[header.pkt_dev_idx]->SetColorDescription((unsigned char *)data);
-                    controllers[header.pkt_dev_idx]->UpdateLEDs();
+                    if(header.pkt_dev_idx < controllers.size())
+                    {
+                        controllers[header.pkt_dev_idx]->SetColorDescription((unsigned char *)data);
+                        controllers[header.pkt_dev_idx]->UpdateLEDs();
+                    }
+                }
+                else
+                {
+                    LOG_ERROR("NetworkServer: UpdateLEDs packet has invalid size. Packet size: %d, Data size: %d", header.pkt_size, *((unsigned int*)data));
+                    goto listen_done;
                 }
                 break;
 
@@ -695,14 +717,33 @@ void NetworkServer::ListenThreadFunction(NetworkClientInfo * client_info)
                     break;
                 }
 
-                if(header.pkt_dev_idx < controllers.size())
+                /*---------------------------------------------------------*\
+                | Verify the color description size (first 4 bytes of data) |
+                | matches the packet size in the header                     |
+                |                                                           |
+                | If protocol version is 4 or below, allow the description  |
+                | size to be zero.  This allows backwards compatibility with|
+                | versions of the OpenRGB.NET SDK implementation which had  |
+                | a bug where this field would always be zero.              |
+                \*---------------------------------------------------------*/
+                if((header.pkt_size == *((unsigned int*)data))
+                || ((client_info->client_protocol_version <= 4)
+                 && (*((unsigned int*)data) == 0)))
                 {
-                    int zone;
+                    if(header.pkt_dev_idx < controllers.size())
+                    {
+                        int zone;
 
-                    memcpy(&zone, &data[sizeof(unsigned int)], sizeof(int));
+                        memcpy(&zone, &data[sizeof(unsigned int)], sizeof(int));
 
-                    controllers[header.pkt_dev_idx]->SetZoneColorDescription((unsigned char *)data);
-                    controllers[header.pkt_dev_idx]->UpdateZoneLEDs(zone);
+                        controllers[header.pkt_dev_idx]->SetZoneColorDescription((unsigned char *)data);
+                        controllers[header.pkt_dev_idx]->UpdateZoneLEDs(zone);
+                    }
+                }
+                else
+                {
+                    LOG_ERROR("NetworkServer: UpdateZoneLEDs packet has invalid size. Packet size: %d, Data size: %d", header.pkt_size, *((unsigned int*)data));
+                    goto listen_done;
                 }
                 break;
 
@@ -712,14 +753,26 @@ void NetworkServer::ListenThreadFunction(NetworkClientInfo * client_info)
                     break;
                 }
 
-                if(header.pkt_dev_idx < controllers.size())
+                /*---------------------------------------------------------*\
+                | Verify the single LED color description size (8 bytes)    |
+                | matches the packet size in the header                     |
+                \*---------------------------------------------------------*/
+                if(header.pkt_size == (sizeof(int) + sizeof(RGBColor)))
                 {
-                    int led;
+                    if(header.pkt_dev_idx < controllers.size())
+                    {
+                        int led;
 
-                    memcpy(&led, data, sizeof(int));
+                        memcpy(&led, data, sizeof(int));
 
-                    controllers[header.pkt_dev_idx]->SetSingleLEDColorDescription((unsigned char *)data);
-                    controllers[header.pkt_dev_idx]->UpdateSingleLED(led);
+                        controllers[header.pkt_dev_idx]->SetSingleLEDColorDescription((unsigned char *)data);
+                        controllers[header.pkt_dev_idx]->UpdateSingleLED(led);
+                    }
+                }
+                else
+                {
+                    LOG_ERROR("NetworkServer: UpdateSingleLED packet has invalid size. Packet size: %d, Data size: %d", header.pkt_size, (sizeof(int) + sizeof(RGBColor)));
+                    goto listen_done;
                 }
                 break;
 
@@ -736,10 +789,29 @@ void NetworkServer::ListenThreadFunction(NetworkClientInfo * client_info)
                     break;
                 }
 
-                if(header.pkt_dev_idx < controllers.size())
+                /*---------------------------------------------------------*\
+                | Verify the mode description size (first 4 bytes of data)  |
+                | matches the packet size in the header                     |
+                |                                                           |
+                | If protocol version is 4 or below, allow the description  |
+                | size to be zero.  This allows backwards compatibility with|
+                | versions of the OpenRGB.NET SDK implementation which had  |
+                | a bug where this field would always be zero.              |
+                \*---------------------------------------------------------*/
+                if((header.pkt_size == *((unsigned int*)data))
+                || ((client_info->client_protocol_version <= 4)
+                 && (*((unsigned int*)data) == 0)))
                 {
-                    controllers[header.pkt_dev_idx]->SetModeDescription((unsigned char *)data, client_info->client_protocol_version);
-                    controllers[header.pkt_dev_idx]->UpdateMode();
+                    if(header.pkt_dev_idx < controllers.size())
+                    {
+                        controllers[header.pkt_dev_idx]->SetModeDescription((unsigned char *)data, client_info->client_protocol_version);
+                        controllers[header.pkt_dev_idx]->UpdateMode();
+                    }
+                }
+                else
+                {
+                    LOG_ERROR("NetworkServer: UpdateMode packet has invalid size. Packet size: %d, Data size: %d", header.pkt_size, *((unsigned int*)data));
+                    goto listen_done;
                 }
                 break;
 
@@ -749,10 +821,24 @@ void NetworkServer::ListenThreadFunction(NetworkClientInfo * client_info)
                     break;
                 }
 
-                if(header.pkt_dev_idx < controllers.size())
+                /*---------------------------------------------------------*\
+                | Verify the mode description size (first 4 bytes of data)  |
+                | matches the packet size in the header                     |
+                |                                                           |
+                | If protocol version is 4 or below, allow the description  |
+                | size to be zero.  This allows backwards compatibility with|
+                | versions of the OpenRGB.NET SDK implementation which had  |
+                | a bug where this field would always be zero.              |
+                \*---------------------------------------------------------*/
+                if((header.pkt_size == *((unsigned int*)data))
+                || ((client_info->client_protocol_version <= 4)
+                 && (*((unsigned int*)data) == 0)))
                 {
-                    controllers[header.pkt_dev_idx]->SetModeDescription((unsigned char *)data, client_info->client_protocol_version);
-                    controllers[header.pkt_dev_idx]->SaveMode();
+                    if(header.pkt_dev_idx < controllers.size())
+                    {
+                        controllers[header.pkt_dev_idx]->SetModeDescription((unsigned char *)data, client_info->client_protocol_version);
+                        controllers[header.pkt_dev_idx]->SaveMode();
+                    }
                 }
                 break;
 
@@ -994,7 +1080,7 @@ void NetworkServer::SendReply_PluginList(SOCKET client_sock)
     /*---------------------------------------------------------*\
     | Calculate data size                                       |
     \*---------------------------------------------------------*/
-    unsigned short num_plugins = plugins.size();
+    unsigned short num_plugins = (unsigned short)plugins.size();
 
     data_size += sizeof(data_size);
     data_size += sizeof(num_plugins);
@@ -1030,7 +1116,7 @@ void NetworkServer::SendReply_PluginList(SOCKET client_sock)
         /*---------------------------------------------------------*\
         | Copy in plugin name (size+data)                           |
         \*---------------------------------------------------------*/
-        unsigned short str_len = strlen(plugins[i].name.c_str()) + 1;
+        unsigned short str_len = (unsigned short)strlen(plugins[i].name.c_str()) + 1;
 
         memcpy(&data_buf[data_ptr], &str_len, sizeof(unsigned short));
         data_ptr += sizeof(unsigned short);
@@ -1041,7 +1127,7 @@ void NetworkServer::SendReply_PluginList(SOCKET client_sock)
         /*---------------------------------------------------------*\
         | Copy in plugin description (size+data)                    |
         \*---------------------------------------------------------*/
-        str_len = strlen(plugins[i].description.c_str()) + 1;
+        str_len = (unsigned short)strlen(plugins[i].description.c_str()) + 1;
 
         memcpy(&data_buf[data_ptr], &str_len, sizeof(unsigned short));
         data_ptr += sizeof(unsigned short);
@@ -1052,7 +1138,7 @@ void NetworkServer::SendReply_PluginList(SOCKET client_sock)
         /*---------------------------------------------------------*\
         | Copy in plugin version (size+data)                        |
         \*---------------------------------------------------------*/
-        str_len = strlen(plugins[i].version.c_str()) + 1;
+        str_len = (unsigned short)strlen(plugins[i].version.c_str()) + 1;
 
         memcpy(&data_buf[data_ptr], &str_len, sizeof(unsigned short));
         data_ptr += sizeof(unsigned short);
