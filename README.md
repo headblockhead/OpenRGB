@@ -108,6 +108,7 @@ This project interacts directly with hardware using reverse engineered protocols
   * OpenRGB-python-FX (by herosilas12): https://github.com/herosilas12/OpenRGB-python-FX
   * AllMyLights (by sparten11740): https://github.com/sparten11740/allmylights
   * OpenRGBRemote (by morg): https://gitlab.com/mguimard/openrgbremote
+  * PiLED (by PolisanTheEasyNick): https://github.com/PolisanTheEasyNick/PiLED
 
 ## OpenRGB Plugins
 
@@ -162,4 +163,8 @@ While no code from these projects directly made its way into OpenRGB, these proj
   * Annemone: https://github.com/manualmanul/Annemone
   * libcmmk: https://github.com/chmod222/libcmmk
   * Signal RGB Plugins: https://gitlab.com/signalrgb/signal-plugins/-/tree/master/Plugins
-  * k550-macos https://github.com/vookimedlo/ck550-macos/tree/master
+  * k550-macos: https://github.com/vookimedlo/ck550-macos/tree/master
+  * luxafor-python: https://github.com/vmitchell85/luxafor-python
+  * dreamcheekyusb: https://github.com/gbrayut/dreamcheekyusb
+  * omen-light: https://github.com/chiahsing/omen-light
+  

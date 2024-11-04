@@ -191,12 +191,14 @@ public:
 
     void                            SetConfigurationDirectory(const filesystem::path &directory);
 
-    void ProcessPreDetectionHooks();
-    void ProcessDynamicDetectors();
+    void ProcessPreDetectionHooks(); // Consider making private
+    void ProcessDynamicDetectors();  // Consider making private
     void UpdateDeviceList();
     void DeviceListChanged();
     void DetectionProgressChanged();
     void I2CBusListChanged();
+
+    void Initialize(bool tryConnect, bool detectDevices, bool startServer, bool applyPostOptions);
 
     void Cleanup();
 
@@ -206,12 +208,17 @@ public:
 
     void StopDeviceDetection();
 
+    void WaitForInitialization();
     void WaitForDeviceDetection();
 
 private:
     void DetectDevicesThreadFunction();
     void UpdateDetectorSettings();
     void SetupConfigurationDirectory();
+    bool AttemptLocalConnection();
+    void InitThreadFunction();
+    bool ProcessPreDetection();
+    void ProcessPostDetection();
 
     /*-------------------------------------------------------------------------------------*\
     | Static pointer to shared instance of ResourceManager                                  |
@@ -219,9 +226,28 @@ private:
     static ResourceManager*                     instance;
 
     /*-------------------------------------------------------------------------------------*\
+    | Auto connection permitting flag                                                       |
+    \*-------------------------------------------------------------------------------------*/
+    bool                                        tryAutoConnect;
+
+    /*-------------------------------------------------------------------------------------*\
     | Detection enabled flag                                                                |
     \*-------------------------------------------------------------------------------------*/
     bool                                        detection_enabled;
+
+    /*-------------------------------------------------------------------------------------*\
+    | Auto connection permitting flag                                                       |
+    \*-------------------------------------------------------------------------------------*/
+    bool                                        start_server;
+
+    /*-------------------------------------------------------------------------------------*\
+    | Auto connection permitting flag                                                       |
+    \*-------------------------------------------------------------------------------------*/
+    bool                                        apply_post_options;
+    /*-------------------------------------------------------------------------------------*\
+    | Initialization completion flag                                                        |
+    \*-------------------------------------------------------------------------------------*/
+    std::atomic<bool>                           init_finished;
 
     /*-------------------------------------------------------------------------------------*\
     | Profile Manager                                                                       |
@@ -275,7 +301,8 @@ private:
     /*-------------------------------------------------------------------------------------*\
     | Detection Thread and Detection State                                                  |
     \*-------------------------------------------------------------------------------------*/
-    std::thread *                               DetectDevicesThread;
+    std::thread *                               DetectDevicesThread; // Used for rescan
+    std::thread *                               InitThread; // Used for initial scan, initial network scan, server startup
     std::mutex                                  DetectDeviceMutex;
 
     std::atomic<bool>                           detection_is_required;

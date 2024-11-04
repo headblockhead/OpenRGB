@@ -98,8 +98,8 @@ std::string CMKeyboardV2Controller::_GetFirmwareVersion()
         cVersionStr[i++] = it;
     }
 
-    std::wstring wsFirmwareVersion(reinterpret_cast<const wchar_t*>(cVersionStr+8));
-    std::string sFirmwareVersion(StringUtils::wstring_to_string(wsFirmwareVersion));
+    std::u16string usFirmwareVersion(reinterpret_cast<const char16_t*>(cVersionStr+8));
+    std::string sFirmwareVersion(StringUtils::u16string_to_string(usFirmwareVersion));
 
     LOG_VERBOSE("[%s] GetFirmwareVersion(): [%s]", m_deviceName.c_str(), sFirmwareVersion.c_str());
 

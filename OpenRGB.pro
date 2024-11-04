@@ -108,7 +108,6 @@ INCLUDEPATH +=                                                                  
     dependencies/hueplusplus-1.1.0/include/hueplusplus                                          \
     dependencies/httplib                                                                        \
     dependencies/json/                                                                          \
-    dependencies/libe131/src/                                                                   \
     dependencies/mdns                                                                           \
     dmiinfo/                                                                                    \
     hidapi_wrapper/                                                                             \
@@ -197,7 +196,6 @@ SOURCES +=                                                                      
     dependencies/hueplusplus-1.1.0/src/UPnP.cpp                                                 \
     dependencies/hueplusplus-1.1.0/src/Utils.cpp                                                \
     dependencies/hueplusplus-1.1.0/src/ZLLSensors.cpp                                           \
-    dependencies/libe131/src/e131.c                                                             \
     main.cpp                                                                                    \
     cli.cpp                                                                                     \
     dmiinfo/dmiinfo.cpp                                                                         \
@@ -227,6 +225,25 @@ SOURCES +=                                                                      
 
 RESOURCES +=                                                                                    \
     qt/resources.qrc                                                                            \
+
+#-----------------------------------------------------------------------------------------------#
+# General configuration to decide if in-tree dependencies are used or not
+#-----------------------------------------------------------------------------------------------#
+
+!system_libe131:SOURCES += dependencies/libe131/src/e131.c
+!system_libe131:INCLUDEPATH += dependencies/libe131/src/
+
+#-----------------------------------------------------------------------------------------------#
+# General configuration out-of-tree dependencies if in-tree are not used for systems
+# who use pkg-config i.e. Unix-like. Also includes macOS as Homebrew uses pkg-config too.
+#-----------------------------------------------------------------------------------------------#
+
+unix {
+    system_libe131 {
+        CONFIG += link_pkgconfig
+        PKGCONFIG += libe131
+    }
+}
 
 #-----------------------------------------------------------------------------------------------#
 # Translations                                                                                  #
@@ -501,9 +518,6 @@ contains(QMAKE_PLATFORM, linux) {
 
     QMAKE_CXXFLAGS += -Wno-implicit-fallthrough -Wno-psabi
 
-    DEFINES +=                                                                                  \
-        OPENRGB_SYSTEM_PLUGIN_DIRECTORY=\\"\"\"$$PREFIX/lib/openrgb/plugins\\"\"\"              \
-
     #-------------------------------------------------------------------------------------------#
     # Determine which hidapi to use based on availability                                       #
     #   Prefer hidraw backend, then libusb                                                      #
@@ -515,7 +529,8 @@ contains(QMAKE_PLATFORM, linux) {
         # hidapi-hidraw >= 0.10.1 supports USAGE/USAGE_PAGE                                     #
         # Define USE_HID_USAGE if hidapi-hidraw supports it                                     #
         #---------------------------------------------------------------------------------------#
-        packagesExist(hidapi-hidraw>=0.10.1) {
+        HIDAPI_HIDRAW_VERSION = $$system($$PKG_CONFIG --modversion hidapi-hidraw)
+        if(versionAtLeast(HIDAPI_HIDRAW_VERSION, "0.10.1")) {
             DEFINES += USE_HID_USAGE
         }
     } else {
@@ -543,6 +558,12 @@ contains(QMAKE_PLATFORM, linux) {
     isEmpty(PREFIX) {
         PREFIX = /usr
     }
+
+    !defined(OPENRGB_SYSTEM_PLUGIN_DIRECTORY, var):OPENRGB_SYSTEM_PLUGIN_DIRECTORY =            \
+        "$$PREFIX/lib/openrgb/plugins"                                                          \
+
+    DEFINES +=                                                                                  \
+        OPENRGB_SYSTEM_PLUGIN_DIRECTORY=\\"\"\"$$OPENRGB_SYSTEM_PLUGIN_DIRECTORY\\"\"\"         \
 
     #-------------------------------------------------------------------------------------------#
     # Custom target for dynamically created udev_rules                                          #

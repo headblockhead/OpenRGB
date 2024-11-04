@@ -9,13 +9,9 @@
 |   SPDX-License-Identifier: GPL-2.0-only                   |
 \*---------------------------------------------------------*/
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <vector>
 #include "Detector.h"
 #include "GigabyteRGBFusionGPUController.h"
 #include "LogManager.h"
-#include "RGBController.h"
 #include "RGBController_GigabyteRGBFusionGPU.h"
 #include "i2c_smbus.h"
 #include "pci_ids.h"
@@ -114,17 +110,22 @@ REGISTER_I2C_PCI_DETECTOR("Gigabyte GTX 1050 Ti G1 Gaming (rev A1)",         Det
 REGISTER_I2C_PCI_DETECTOR("Gigabyte GTX 1050 Ti G1 Gaming",                  DetectGigabyteRGBFusionGPUControllers,  NVIDIA_VEN, NVIDIA_GTX1050TI_DEV,       GIGABYTE_SUB_VEN,   GIGABYTE_GTX1050TI_G1_GAMING_SUB_DEV,           0x48);
 REGISTER_I2C_PCI_DETECTOR("Gigabyte GTX 1060 G1 Gaming 6G",                  DetectGigabyteRGBFusionGPUControllers,  NVIDIA_VEN, NVIDIA_GTX1060_DEV,         GIGABYTE_SUB_VEN,   GIGABYTE_GTX1060_G1_GAMING_SUB_DEV,             0x48);
 REGISTER_I2C_PCI_DETECTOR("Gigabyte GTX 1060 G1 Gaming 6G OC",               DetectGigabyteRGBFusionGPUControllers,  NVIDIA_VEN, NVIDIA_GTX1060_DEV,         GIGABYTE_SUB_VEN,   GIGABYTE_GTX1060_G1_GAMING_OC_SUB_DEV,          0x47);
-REGISTER_I2C_PCI_DETECTOR("Gigabyte GTX 1060 Xtreme Gaming V1",              DetectGigabyteRGBFusionGPUControllers,  NVIDIA_VEN, NVIDIA_GTX1060_DEV,         GIGABYTE_SUB_VEN,   GIGABYTE_GTX1060_XTREME_V1_SUB_DEV,             0x47);
-REGISTER_I2C_PCI_DETECTOR("Gigabyte GTX 1060 Xtreme Gaming v2",              DetectGigabyteRGBFusionGPUControllers,  NVIDIA_VEN, NVIDIA_GTX1060_DEV,         GIGABYTE_SUB_VEN,   GIGABYTE_GTX1060_XTREME_V2_SUB_DEV,             0x47);
-REGISTER_I2C_PCI_DETECTOR("Gigabyte GTX 1070 Xtreme Gaming",                 DetectGigabyteRGBFusionGPUControllers,  NVIDIA_VEN, NVIDIA_GTX1070_DEV,         GIGABYTE_SUB_VEN,   GIGABYTE_GTX1070_XTREME_SUB_DEV,                0x47);
+REGISTER_I2C_PCI_DETECTOR("Gigabyte GTX 1060 Xtreme Gaming V1",              DetectGigabyteRGBFusionGPUControllers,  NVIDIA_VEN, NVIDIA_GTX1060_DEV,         GIGABYTE_SUB_VEN,   GIGABYTE_GTX1060_XTREME_V1_SUB_DEV_D,           0x47);
+REGISTER_I2C_PCI_DETECTOR("Gigabyte GTX 1060 Xtreme Gaming V1",              DetectGigabyteRGBFusionGPUControllers,  NVIDIA_VEN, NVIDIA_GTX1060_DEV,         GIGABYTE_SUB_VEN,   GIGABYTE_GTX1060_XTREME_V1_SUB_DEV_H,           0x47);
+REGISTER_I2C_PCI_DETECTOR("Gigabyte GTX 1060 Xtreme Gaming V2",              DetectGigabyteRGBFusionGPUControllers,  NVIDIA_VEN, NVIDIA_GTX1060_DEV,         GIGABYTE_SUB_VEN,   GIGABYTE_GTX1060_XTREME_V2_SUB_DEV_D,           0x47);
+REGISTER_I2C_PCI_DETECTOR("Gigabyte GTX 1060 Xtreme Gaming V2",              DetectGigabyteRGBFusionGPUControllers,  NVIDIA_VEN, NVIDIA_GTX1060_DEV,         GIGABYTE_SUB_VEN,   GIGABYTE_GTX1060_XTREME_V2_SUB_DEV_H,           0x47);
+REGISTER_I2C_PCI_DETECTOR("Gigabyte GTX 1070 Xtreme Gaming",                 DetectGigabyteRGBFusionGPUControllers,  NVIDIA_VEN, NVIDIA_GTX1070_DEV,         GIGABYTE_SUB_VEN,   GIGABYTE_GTX1070_XTREME_SUB_DEV_D,              0x47);
+REGISTER_I2C_PCI_DETECTOR("Gigabyte GTX 1070 Xtreme Gaming",                 DetectGigabyteRGBFusionGPUControllers,  NVIDIA_VEN, NVIDIA_GTX1070_DEV,         GIGABYTE_SUB_VEN,   GIGABYTE_GTX1070_XTREME_SUB_DEV_H,              0x47);
 REGISTER_I2C_PCI_DETECTOR("Gigabyte GTX 1070 G1 Gaming 8G V1",               DetectGigabyteRGBFusionGPUControllers,  NVIDIA_VEN, NVIDIA_GTX1070_DEV,         GIGABYTE_SUB_VEN,   GIGABYTE_GTX1070_G1_GAMING_8G_SUB_DEV,          0x47);
 REGISTER_I2C_PCI_DETECTOR("Gigabyte GTX 1070 Ti 8G Gaming",                  DetectGigabyteRGBFusionGPUControllers,  NVIDIA_VEN, NVIDIA_GTX1070TI_DEV,       GIGABYTE_SUB_VEN,   GIGABYTE_GTX1070TI_GAMING_SUB_DEV,              0x47);
 REGISTER_I2C_PCI_DETECTOR("Gigabyte GTX 1080 G1 Gaming",                     DetectGigabyteRGBFusionGPUControllers,  NVIDIA_VEN, NVIDIA_GTX1080_DEV,         GIGABYTE_SUB_VEN,   GIGABYTE_GTX1080_G1_GAMING_SUB_DEV,             0x48);
 REGISTER_I2C_PCI_DETECTOR("Gigabyte GTX 1080 Ti 11G",                        DetectGigabyteRGBFusionGPUControllers,  NVIDIA_VEN, NVIDIA_GTX1080TI_DEV,       GIGABYTE_SUB_VEN,   GIGABYTE_GTX1080TI_SUB_DEV,                     0x47);
 REGISTER_I2C_PCI_DETECTOR("Gigabyte GTX 1080 Ti Gaming OC 11G",              DetectGigabyteRGBFusionGPUControllers,  NVIDIA_VEN, NVIDIA_GTX1080TI_DEV,       GIGABYTE_SUB_VEN,   GIGABYTE_GTX1080TI_GAMING_OC_SUB_DEV,           0x47);
 REGISTER_I2C_PCI_DETECTOR("Gigabyte GTX 1080 Ti Gaming OC BLACK 11G",        DetectGigabyteRGBFusionGPUControllers,  NVIDIA_VEN, NVIDIA_GTX1080TI_DEV,       GIGABYTE_SUB_VEN,   GIGABYTE_GTX1080TI_GAMING_OC_BLACK_SUB_DEV,     0x47);
-REGISTER_I2C_PCI_DETECTOR("Gigabyte GTX 1080 Ti Xtreme Edition",             DetectGigabyteRGBFusionGPUControllers,  NVIDIA_VEN, NVIDIA_GTX1080TI_DEV,       GIGABYTE_SUB_VEN,   GIGABYTE_GTX1080TI_XTREME_SUB_DEV,              0x47);
-REGISTER_I2C_PCI_DETECTOR("Gigabyte GTX 1080 Ti Xtreme Waterforce Edition",  DetectGigabyteRGBFusionGPUControllers,  NVIDIA_VEN, NVIDIA_GTX1080TI_DEV,       GIGABYTE_SUB_VEN,   GIGABYTE_GTX1080TI_XTREME_WATERFORCE_SUB_DEV,   0x47);
+REGISTER_I2C_PCI_DETECTOR("Gigabyte GTX 1080 Ti Xtreme Edition",             DetectGigabyteRGBFusionGPUControllers,  NVIDIA_VEN, NVIDIA_GTX1080TI_DEV,       GIGABYTE_SUB_VEN,   GIGABYTE_GTX1080TI_XTREME_SUB_DEV_D,            0x47);
+REGISTER_I2C_PCI_DETECTOR("Gigabyte GTX 1080 Ti Xtreme Edition",             DetectGigabyteRGBFusionGPUControllers,  NVIDIA_VEN, NVIDIA_GTX1080TI_DEV,       GIGABYTE_SUB_VEN,   GIGABYTE_GTX1080TI_XTREME_SUB_DEV_H,            0x47);
+REGISTER_I2C_PCI_DETECTOR("Gigabyte GTX 1080 Ti Xtreme Waterforce Edition",  DetectGigabyteRGBFusionGPUControllers,  NVIDIA_VEN, NVIDIA_GTX1080TI_DEV,       GIGABYTE_SUB_VEN,   GIGABYTE_GTX1080TI_XTREME_WATERFORCE_SUB_DEV_D, 0x47);
+REGISTER_I2C_PCI_DETECTOR("Gigabyte GTX 1080 Ti Xtreme Waterforce Edition",  DetectGigabyteRGBFusionGPUControllers,  NVIDIA_VEN, NVIDIA_GTX1080TI_DEV,       GIGABYTE_SUB_VEN,   GIGABYTE_GTX1080TI_XTREME_WATERFORCE_SUB_DEV_H, 0x47);
 REGISTER_I2C_PCI_DETECTOR("Gigabyte GTX 1650 Gaming OC",                     DetectGigabyteRGBFusionGPUControllers,  NVIDIA_VEN, NVIDIA_GTX1650_DEV,         GIGABYTE_SUB_VEN,   GIGABYTE_GTX1650_GAMING_OC_SUB_DEV,             0x55);
 REGISTER_I2C_PCI_DETECTOR("Gigabyte GTX 1660 Gaming OC 6G",                  DetectGigabyteRGBFusionGPUControllers,  NVIDIA_VEN, NVIDIA_GTX1660_DEV,         GIGABYTE_SUB_VEN,   GIGABYTE_GTX1660_GAMING_OC_6G_SUB_DEV,          0x47);
 REGISTER_I2C_PCI_DETECTOR("Gigabyte GTX 1660 SUPER Gaming OC",               DetectGigabyteRGBFusionGPUControllers,  NVIDIA_VEN, NVIDIA_GTX1660S_DEV,        GIGABYTE_SUB_VEN,   GIGABYTE_GTX1660S_GAMING_OC_SUB_DEV,            0x47);

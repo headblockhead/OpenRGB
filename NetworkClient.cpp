@@ -196,6 +196,7 @@ void NetworkClient::StopClient()
     \*---------------------------------------------------------*/
     if(ConnectionThread)
     {
+        connection_cv.notify_all();
         ConnectionThread->join();
         delete ConnectionThread;
         ConnectionThread = nullptr;
@@ -210,6 +211,8 @@ void NetworkClient::StopClient()
 void NetworkClient::ConnectionThreadFunction()
 {
     unsigned int requested_controllers;
+
+    std::unique_lock<std::mutex> lock(connection_mutex);
 
     /*---------------------------------------------------------*\
     | This thread manages the connection to the server          |
@@ -257,7 +260,10 @@ void NetworkClient::ConnectionThreadFunction()
             }
         }
 
-        if(server_initialized == false && server_connected == true)
+        /*-------------------------------------------------------------*\
+        | Double-check client_active as it could have changed           |
+        \*-------------------------------------------------------------*/
+        if(client_active && server_initialized == false && server_connected == true)
         {
             unsigned int timeout_counter     = 0;
             requested_controllers            = 0;
@@ -268,7 +274,11 @@ void NetworkClient::ConnectionThreadFunction()
             /*---------------------------------------------------------*\
             | Wait for server to connect                                |
             \*---------------------------------------------------------*/
-            std::this_thread::sleep_for(100ms);
+            connection_cv.wait_for(lock, 100ms);
+            if(!client_active)
+            {
+                break;
+            }
 
             /*---------------------------------------------------------*\
             | Request protocol version                                  |
@@ -280,7 +290,11 @@ void NetworkClient::ConnectionThreadFunction()
             \*---------------------------------------------------------*/
             while(!server_protocol_version_received)
             {
-                std::this_thread::sleep_for(5ms);
+                connection_cv.wait_for(lock, 5ms);
+                if(!client_active)
+                {
+                    break;
+                }
 
                 timeout_counter++;
 
@@ -311,7 +325,11 @@ void NetworkClient::ConnectionThreadFunction()
             \*---------------------------------------------------------*/
             while(!server_controller_count_received)
             {
-                std::this_thread::sleep_for(5ms);
+                connection_cv.wait_for(lock, 5ms);
+                if(!client_active)
+                {
+                    break;
+                }
             }
 
             printf("Client: Received controller count from server: %d\r\n", server_controller_count);
@@ -331,7 +349,11 @@ void NetworkClient::ConnectionThreadFunction()
                 \*---------------------------------------------------------*/
                 while(controller_data_received == false)
                 {
-                    std::this_thread::sleep_for(5ms);
+                    connection_cv.wait_for(lock, 5ms);
+                    if(!client_active)
+                    {
+                        break;
+                    }
                 }
 
                 requested_controllers++;
@@ -358,7 +380,10 @@ void NetworkClient::ConnectionThreadFunction()
             ClientInfoChanged();
         }
 
-        std::this_thread::sleep_for(1s);
+        /*---------------------------------------------------------*\
+        | Wait 1 sec or until the thread is requested to stop       |
+        \*---------------------------------------------------------*/
+        connection_cv.wait_for(lock, 1s);
     }
 }
 

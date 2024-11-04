@@ -99,6 +99,32 @@ keyboard_keymap_overlay_values corsair_k70_layout
     }
 };
 
+keyboard_keymap_overlay_values corsair_k70_pro_layout
+{
+    KEYBOARD_SIZE::KEYBOARD_SIZE_FULL,
+    {
+        corsair_full_size_values,
+        {
+            /* Add more regional layout fixes here */
+        }
+    },
+    {
+        /*---------------------------------------------------------------------------------------------------------*\
+        | Edit Keys                                                                                                 |
+        |   Zone,   Row,    Column,     Value,      Key,                        OpCode,                             |
+        \*---------------------------------------------------------------------------------------------------------*/
+        {   0,      0,       0,         128,        "Profile",                  KEYBOARD_OPCODE_INSERT_ROW,         },  // Insert Profile into new row
+        {   0,      0,       1,         113,        "Light",                    KEYBOARD_OPCODE_INSERT_SHIFT_RIGHT, },  // Insert Light key
+        {   0,      0,       2,         114,        "Lock",                     KEYBOARD_OPCODE_INSERT_SHIFT_RIGHT, },  // Insert Lock Key
+        {   0,      0,      10,         191,        "Logo",                     KEYBOARD_OPCODE_INSERT_SHIFT_RIGHT, },  // Insert Logo
+        {   0,      0,      18,         102,        KEY_EN_MEDIA_MUTE,          KEYBOARD_OPCODE_INSERT_SHIFT_RIGHT, },  // Insert Mute Key
+        {   0,      1,      17,         123,        KEY_EN_MEDIA_STOP,          KEYBOARD_OPCODE_INSERT_SHIFT_RIGHT, },  // Insert Stop Key
+        {   0,      1,      18,         126,        KEY_EN_MEDIA_PREVIOUS,      KEYBOARD_OPCODE_INSERT_SHIFT_RIGHT, },  // Insert Previous Track Key
+        {   0,      1,      19,         124,        KEY_EN_MEDIA_PLAY_PAUSE,    KEYBOARD_OPCODE_INSERT_SHIFT_RIGHT, },  // Insert Play Pause Key
+        {   0,      1,      20,         125,        KEY_EN_MEDIA_NEXT,          KEYBOARD_OPCODE_INSERT_SHIFT_RIGHT, },  // Insert Next Tack Key
+    }
+};
+
 keyboard_keymap_overlay_values corsair_K70_TKL_cs_layout
 {
     KEYBOARD_SIZE::KEYBOARD_SIZE_TKL,
@@ -765,6 +791,38 @@ static const corsair_v2_device k60_rgb_pro_tkl_device =
 };
 
 /*-------------------------------------------------------------*\
+|  Corsair K70 Core RGB 1B1C:1BFD                               |
+|                                                               |
+|  Zone "Keyboard"                                              |
+|       Matrix                                                  |
+|       6 Rows, 21 Columns                                      |
+\*-------------------------------------------------------------*/
+static const corsair_v2_zone k70_core_rgb_zone =
+{
+    ZONE_EN_KEYBOARD,
+    ZONE_TYPE_MATRIX,
+    6,
+    21
+};
+
+static const corsair_v2_device k70_core_rgb_device =
+{
+    CORSAIR_K70_CORE_RGB_PID,
+    DEVICE_TYPE_KEYBOARD,
+    6,
+    21,
+    {
+        &k70_core_rgb_zone,
+        nullptr,
+        nullptr,
+        nullptr,
+        nullptr,
+        nullptr
+    },
+    &corsair_k70_layout
+};
+
+/*-------------------------------------------------------------*\
 |  Corsair K70 RGB TKL 1B1C:1B73                                |
 |                                                               |
 |  Zone "Keyboard"                                              |
@@ -839,7 +897,7 @@ static const corsair_v2_zone k70_rgb_pro_zone =
 {
     ZONE_EN_KEYBOARD,
     ZONE_TYPE_MATRIX,
-    6,
+    7,
     21
 };
 
@@ -847,7 +905,7 @@ static const corsair_v2_device k70_rgb_pro_device =
 {
     CORSAIR_K70_RGB_PRO_PID,
     DEVICE_TYPE_KEYBOARD,
-    6,
+    7,
     21,
     {
         &k70_rgb_pro_zone,
@@ -857,7 +915,31 @@ static const corsair_v2_device k70_rgb_pro_device =
         nullptr,
         nullptr
     },
-    &corsair_k70_layout
+    &corsair_k70_pro_layout
+};
+
+/*-------------------------------------------------------------*\
+|  Corsair K70 RGB Pro V2 1B1C:1BB3                             |
+|                                                               |
+|  Zone "Keyboard"                                              |
+|       Matrix                                                  |
+|       6 Rows, 21 Columns                                      |
+\*-------------------------------------------------------------*/
+static const corsair_v2_device k70_rgb_pro_v2_device =
+    {
+        CORSAIR_K70_RGB_PRO_V2_PID,
+        DEVICE_TYPE_KEYBOARD,
+        7,
+        21,
+        {
+            &k70_rgb_pro_zone,
+            nullptr,
+            nullptr,
+            nullptr,
+            nullptr,
+            nullptr
+        },
+        &corsair_k70_pro_layout
 };
 
 /*-------------------------------------------------------------*\
@@ -1153,7 +1235,9 @@ const corsair_v2_device* corsair_v2_device_list_data[] =
     &k60_rgb_pro_device,
     &k60_rgb_pro_lp_device,
     &k60_rgb_pro_tkl_device,
+    &k70_core_rgb_device,
     &k70_rgb_pro_device,
+    &k70_rgb_pro_v2_device,
     &k70_rgb_tkl_device,
     &k70_rgb_tkl_cs_device,
     &k100_mx_red_device,

@@ -22,7 +22,6 @@
 #include "AsusAuraMousematController.h"
 #include "AsusAuraMonitorController.h"
 #include "AsusAuraRyuoAIOController.h"
-#include "RGBController.h"
 #include "RGBController_AsusAuraUSB.h"
 #include "RGBController_AsusAuraHeadsetStand.h"
 #include "RGBController_AsusAuraKeyboard.h"
@@ -50,6 +49,7 @@
 #define AURA_MOTHERBOARD_1_PID                        0x18F3
 #define AURA_MOTHERBOARD_2_PID                        0x1939
 #define AURA_MOTHERBOARD_3_PID                        0x19AF
+#define AURA_MOTHERBOARD_4_PID                        0x1AA6
 
 /*-----------------------------------------------------------------*\
 |  KEYBOARDS                                                        |
@@ -344,6 +344,7 @@ REGISTER_HID_DETECTOR   ("ASUS Aura Addressable",                       DetectAs
 REGISTER_HID_DETECTOR   ("ASUS Aura Motherboard",                       DetectAsusAuraUSBMotherboards,  AURA_USB_VID, AURA_MOTHERBOARD_1_PID);
 REGISTER_HID_DETECTOR   ("ASUS Aura Motherboard",                       DetectAsusAuraUSBMotherboards,  AURA_USB_VID, AURA_MOTHERBOARD_2_PID);
 REGISTER_HID_DETECTOR   ("ASUS Aura Motherboard",                       DetectAsusAuraUSBMotherboards,  AURA_USB_VID, AURA_MOTHERBOARD_3_PID);
+REGISTER_HID_DETECTOR   ("ASUS Aura Motherboard",                       DetectAsusAuraUSBMotherboards,  AURA_USB_VID, AURA_MOTHERBOARD_4_PID);
 
 /*-----------------------------------------------------------------*\
 |  KEYBOARDS                                                        |
@@ -415,6 +416,7 @@ REGISTER_HID_DETECTOR_IP("ASUS ROG Keris Wireless Bluetooth",                   
 REGISTER_HID_DETECTOR_IP("ASUS ROG Keris Wireless AimPoint USB",                DetectAsusAuraUSBMice,  AURA_USB_VID, AURA_ROG_KERIS_WIRELESS_AIMPOINT_USB_PID,         0,  0xFF01);
 REGISTER_HID_DETECTOR_IP("ASUS ROG Keris Wireless AimPoint 2.4Ghz",             DetectAsusAuraUSBMice,  AURA_USB_VID, AURA_ROG_KERIS_WIRELESS_AIMPOINT_2_4_PID,         0,  0xFF01);
 REGISTER_HID_DETECTOR_IP("ASUS TUF Gaming M3",                                  DetectAsusAuraUSBMice,  AURA_USB_VID, AURA_TUF_M3_PID,                                  1,  0xFF01);
+REGISTER_HID_DETECTOR_IP("ASUS TUF Gaming M3 Gen II",                           DetectAsusAuraUSBMice,  AURA_USB_VID, AURA_TUF_M3_GEN_II_PID,                           2,  0xFF01);
 REGISTER_HID_DETECTOR_IP("ASUS TUF Gaming M5",                                  DetectAsusAuraUSBMice,  AURA_USB_VID, AURA_TUF_M5_PID,                                  2,  0xFF01);
 
 REGISTER_HID_DETECTOR_IP("ASUS ROG Strix Evolve",                       DetectAsusAuraUSBStrixEvolve,   AURA_USB_VID, AURA_ROG_STRIX_EVOLVE_PID,                    1,  0x0008);
